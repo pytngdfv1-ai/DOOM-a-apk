@@ -1,0 +1,7 @@
+{
+  "appId": "com.tuempresa.doomweb",
+  "appName": "DoomWeb",
+  "webDir": "www",
+  "server": { "androidScheme": "https", "cleartext": true },
+  "android": { "allowMixedContent": true }
+}
