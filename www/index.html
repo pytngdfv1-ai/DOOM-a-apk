@@ -1,0 +1,572 @@
+<html><head><base href="https://websim.ai/doom/">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<title>Websim DOOM</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body {
+    background-color: #000;
+    color: white;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    overscroll-behavior: none;
+    touch-action: none;
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    height: 100dvh;
+    width: 100vw;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .game-container {
+    position: relative;
+    width: 800px;
+    height: 600px;
+    border: 2px solid #333;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    overflow: hidden;
+    touch-action: none;
+  }
+
+  @media (max-width: 900px) {
+    .game-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      border: none;
+      box-shadow: none;
+    }
+    .controls-container { display: none !important; }
+  }
+
+  #jsdos {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    image-rendering: pixelated;
+  }
+
+  .post-processing {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: transparent;
+    mix-blend-mode: screen;
+    pointer-events: none;
+  }
+
+  .grain {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkAQMAAABKLAcXAAAABlBMVEX///8AAABVwtN+AAAACXBIWXMAAA7EAAAOxAGVKw4bAAAA7klEQVRIx2NgGAWjYBSMgvEQAYgFowBWgliEKgIQg4UAAKkibAaQjAQCICUJAKCYBABQTAIAKCYBABSTAACKSQAAxSQAgGISAEAxCQCgmAQAUEwCAKgAZMGQqwAQUAgMIASGEAJDCAEBSAkAISmEkABCAoASAFIQSAkAIQ2ElABCAKggAIR0EFIACBEgRABoAkBIByEFgBABQgQALgBACgghAAABIMSAEAeAiABACAAAA4QoEGIBECkAoAKQAqMUBKMUGKUgGKXAKAXBKAXBqBQAA0cAWPuM5vAAAAAElFTkSuQmCC');
+    opacity: 0.05;
+    pointer-events: none;
+  }
+
+  .vignette {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0) 60%, rgba(0,0,0,0.7) 100%);
+    pointer-events: none;
+  }
+
+  .controls-container {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0, 0, 0, 0.5);
+    padding: 10px;
+    border-radius: 4px;
+    max-width: 125px;
+    z-index: 5;
+  }
+
+  #controls-list {
+    list-style-type: none;
+    padding: 0;
+  }
+
+  #controls-list li {
+    margin-bottom: 5px;
+    display: flex;
+    align-items: center;
+  }
+
+  #controls-list i {
+    margin-right: 5px;
+  }
+
+  #fullscreenBtn {
+    display: block;
+    margin-top: 10px;
+    padding: 4px 8px;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    font-size: 10px;
+    width: 100%;
+  }
+
+  #fullscreenBtn:hover {
+    background-color: #555;
+  }
+
+  .js-dos-watermark {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 12px;
+    z-index: 1;
+  }
+
+  /* ---------- Overlay de rotación ---------- */
+  #rotateOverlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100vw; height: 100dvh;
+    background: #000;
+    z-index: 999;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 20px;
+  }
+  #rotateOverlay i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    animation: rotatePulse 1.6s ease-in-out infinite;
+  }
+  @keyframes rotatePulse {
+    0%, 100% { transform: rotate(0deg); }
+    50% { transform: rotate(90deg); }
+  }
+  @media (max-width: 900px) and (orientation: portrait) {
+    #rotateOverlay.mobile-active { display: flex; }
+  }
+
+  /* ---------- Controles táctiles ---------- */
+  .touch-controls {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    z-index: 10;
+    pointer-events: none;
+  }
+  body.is-touch .touch-controls { display: block; }
+  body.is-touch .controls-container { display: none; }
+
+  .touch-btn {
+    position: absolute;
+    pointer-events: auto;
+    background: rgba(255,255,255,0.12);
+    border: 2px solid rgba(255,255,255,0.35);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    user-select: none;
+    touch-action: none;
+  }
+  .touch-btn.active { background: rgba(255,60,60,0.45); border-color: #ff5050; }
+  .touch-btn.small { width: 50px; height: 50px; font-size: 14px; }
+  .touch-btn.big { width: 62px; height: 62px; }
+
+  /* D-Pad izquierda */
+  .dpad { position: absolute; left: 18px; bottom: 18px; width: 150px; height: 150px; pointer-events: none; }
+  .dpad .touch-btn { pointer-events: auto; border-radius: 10px; }
+  #dpadUp    { top: 0;   left: 50px; }
+  #dpadDown  { bottom: 0;left: 50px; }
+  #dpadLeft  { top: 50px;left: 0; }
+  #dpadRight { top: 50px;right: 0; }
+
+  /* Botones derecha */
+  #btnFire   { right: 20px;  bottom: 90px; }
+  #btnUse    { right: 95px;  bottom: 140px; }
+  #btnSpeed  { right: 20px;  bottom: 170px; }
+  #btnStrafeMod { right: 95px; bottom: 30px; }
+  #btnStrafeL { right: 170px; bottom: 30px; }
+  #btnStrafeR { right: 170px; bottom: 100px; }
+  #btnEnter { right: 95px; bottom: 210px; }
+  #btnEsc   { right: 20px; bottom: 250px; }
+  #btnFullscreenMobile { right: 170px; bottom: 250px; }
+
+  /* Botón menú de trucos */
+  #cheatToggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+    pointer-events: auto;
+    background: rgba(0,0,0,0.6);
+    border: 1px solid #444;
+    color: #fff;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 12px;
+    cursor: pointer;
+  }
+
+  #cheatPanel {
+    position: absolute;
+    top: 45px;
+    left: 10px;
+    z-index: 20;
+    pointer-events: auto;
+    background: rgba(0,0,0,0.88);
+    border: 1px solid #555;
+    border-radius: 6px;
+    padding: 10px;
+    width: 200px;
+    max-height: 70%;
+    overflow-y: auto;
+    display: none;
+  }
+  #cheatPanel.open { display: block; }
+  #cheatPanel h4 {
+    margin: 0 0 8px 0;
+    font-size: 13px;
+    color: #ff5050;
+    border-bottom: 1px solid #444;
+    padding-bottom: 5px;
+  }
+  .cheat-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: #222;
+    border: 1px solid #3a3a3a;
+    color: #eee;
+    padding: 6px 8px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    font-size: 11px;
+    cursor: pointer;
+  }
+  .cheat-btn:active, .cheat-btn.firing { background: #ff5050; color: #000; }
+  .cheat-btn small { display: block; color: #999; font-size: 9px; }
+  .cheat-btn:active small, .cheat-btn.firing small { color: #300; }
+
+  #cheatStatus {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0,0,0,0.7);
+    color: #ff5050;
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    z-index: 25;
+    pointer-events: none;
+    display: none;
+  }
+</style>
+<script src="https://js-dos.com/6.22/current/js-dos.js"></script>
+</head>
+<body>
+  <div id="rotateOverlay">
+    <i class="fas fa-mobile-alt"></i>
+    <div>Girá tu dispositivo a modo horizontal para jugar</div>
+  </div>
+
+  <div class="container">
+    <div class="game-container" id="gameContainer">
+      <canvas id="jsdos" width="800" height="600"></canvas>
+      <div class="post-processing">
+        <div class="grain"></div>
+        <div class="vignette"></div>
+      </div>
+
+      <div class="controls-container">
+        <h3 id="controls-heading">Controls</h3>
+        <ul id="controls-list">
+          <li><i class="fas fa-arrow-up"></i> Move Up</li>
+          <li><i class="fas fa-arrow-down"></i> Move Down</li>
+          <li><i class="fas fa-arrow-left"></i> Move Left</li>
+          <li><i class="fas fa-arrow-right"></i> Move Right</li>
+          <li><i class="fas fa-keyboard"></i> Use: W</li>
+          <li><i class="fas fa-crosshairs"></i> Fire: S</li>
+          <li><i class="fas fa-running"></i> Speed on: SPACE</li>
+          <li><i class="fas fa-exchange-alt"></i> Strafe on: ALT</li>
+          <li><i class="fas fa-sync-alt"></i> Strafe: A, D</li>
+        </ul>
+        <button id="fullscreenBtn">Fullscreen</button>
+      </div>
+
+      <!-- Botón y panel de trucos (visible siempre) -->
+      <button id="cheatToggle"><i class="fas fa-flask"></i> Trucos</button>
+      <div id="cheatPanel">
+        <h4>Códigos de trucos</h4>
+        <button class="cheat-btn" data-cheat="iddqd">Dios (invencible)<small>IDDQD</small></button>
+        <button class="cheat-btn" data-cheat="idkfa">Todas armas+llaves+munición<small>IDKFA</small></button>
+        <button class="cheat-btn" data-cheat="idfa">Todas armas+munición<small>IDFA</small></button>
+        <button class="cheat-btn" data-cheat="idclip">Atravesar paredes<small>IDCLIP</small></button>
+        <button class="cheat-btn" data-cheat="idbeholdv">Invencibilidad temporal<small>IDBEHOLDV</small></button>
+        <button class="cheat-btn" data-cheat="idbeholds">Berserk<small>IDBEHOLDS</small></button>
+        <button class="cheat-btn" data-cheat="idbeholdi">Invisibilidad<small>IDBEHOLDI</small></button>
+        <button class="cheat-btn" data-cheat="idbeholdr">Traje antirradiación<small>IDBEHOLDR</small></button>
+        <button class="cheat-btn" data-cheat="idbeholda">Automapa completo<small>IDBEHOLDA</small></button>
+        <button class="cheat-btn" data-cheat="idbeholdl">Amplificador de luz<small>IDBEHOLDL</small></button>
+        <button class="cheat-btn" data-cheat="idmypos">Mostrar posición<small>IDMYPOS</small></button>
+        <button class="cheat-btn" data-cheat="idclev11">Ir a E1M1<small>IDCLEV11</small></button>
+        <button class="cheat-btn" data-cheat="idclev21">Ir a E2M1<small>IDCLEV21</small></button>
+        <button class="cheat-btn" data-cheat="idclev31">Ir a E3M1<small>IDCLEV31</small></button>
+      </div>
+      <div id="cheatStatus"></div>
+
+      <!-- Controles táctiles -->
+      <div class="touch-controls">
+        <div class="dpad">
+          <div class="touch-btn" id="dpadUp"><i class="fas fa-arrow-up"></i></div>
+          <div class="touch-btn" id="dpadDown"><i class="fas fa-arrow-down"></i></div>
+          <div class="touch-btn" id="dpadLeft"><i class="fas fa-arrow-left"></i></div>
+          <div class="touch-btn" id="dpadRight"><i class="fas fa-arrow-right"></i></div>
+        </div>
+        <div class="touch-btn big" id="btnFire">Fuego</div>
+        <div class="touch-btn small" id="btnUse">Usar</div>
+        <div class="touch-btn small" id="btnSpeed">Correr</div>
+        <div class="touch-btn small" id="btnStrafeMod">Alt</div>
+        <div class="touch-btn small" id="btnStrafeL">◄ Strafe</div>
+        <div class="touch-btn small" id="btnStrafeR">Strafe ►</div>
+        <div class="touch-btn small" id="btnEnter">Seleccionar</div>
+        <div class="touch-btn small" id="btnEsc">Esc</div>
+        <div class="touch-btn small" id="btnFullscreenMobile"><i class="fas fa-expand"></i></div>
+      </div>
+
+      <div class="js-dos-watermark">Powered by js-dos</div>
+    </div>
+  </div>
+
+  <script type="text/javascript">
+    // ---------- Ajuste dinámico de tamaño (evita franjas negras en móvil) ----------
+    var gameContainer = document.getElementById('gameContainer');
+    var ASPECT = 4 / 3;
+    function fitGame() {
+      var vw = (window.visualViewport ? window.visualViewport.width : window.innerWidth);
+      var vh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+      var w, h;
+      if (vw > 900) {
+        // Escritorio: se mantiene la proporción sin recortar
+        if (vw / vh > ASPECT) { h = Math.min(600, vh); w = h * ASPECT; }
+        else { w = Math.min(800, vw); h = w / ASPECT; }
+      } else {
+        // Móvil: modo "cover", cubre toda la pantalla sin barras negras (recorta bordes)
+        var scale = Math.max(vw / 800, vh / 600);
+        w = 800 * scale;
+        h = 600 * scale;
+      }
+      gameContainer.style.width = Math.ceil(w) + 'px';
+      gameContainer.style.height = Math.ceil(h) + 'px';
+    }
+    fitGame();
+    window.addEventListener('resize', fitGame);
+    window.addEventListener('orientationchange', function(){ setTimeout(fitGame, 200); });
+    if (window.visualViewport) window.visualViewport.addEventListener('resize', fitGame);
+
+    var isTouchCapable = ('ontouchstart' in window) || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches;
+    var isMobileUA = /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent);
+    var isTouch = isTouchCapable || isMobileUA;
+    function applyTouchMode(on) {
+      document.body.classList.toggle('is-touch', on);
+      var kc = document.querySelector('.controls-container');
+      if (kc) kc.style.display = on ? 'none' : 'block';
+    }
+    applyTouchMode(isTouch);
+
+    // Botón manual por si la detección automática falla en algún dispositivo
+    var toggleTouchBtn = document.createElement('button');
+    toggleTouchBtn.id = 'toggleTouchBtn';
+    toggleTouchBtn.textContent = document.body.classList.contains('is-touch') ? 'Ocultar controles táctiles' : 'Mostrar controles táctiles';
+    toggleTouchBtn.style.cssText = 'position:absolute;bottom:10px;right:10px;z-index:20;background:rgba(0,0,0,0.6);color:#fff;border:1px solid #555;border-radius:4px;padding:6px 8px;font-size:10px;cursor:pointer;';
+    toggleTouchBtn.addEventListener('click', function() {
+      var on = !document.body.classList.contains('is-touch');
+      applyTouchMode(on);
+      toggleTouchBtn.textContent = on ? 'Ocultar controles táctiles' : 'Mostrar controles táctiles';
+    });
+    document.getElementById('gameContainer').appendChild(toggleTouchBtn);
+
+    // ---------- Overlay de rotación (solo móvil) ----------
+    var rotateOverlay = document.getElementById('rotateOverlay');
+    function updateOrientationOverlay() {
+      var isMobileWidth = window.innerWidth <= 900;
+      var isPortrait = window.innerHeight > window.innerWidth;
+      if (isTouch && isMobileWidth && isPortrait) {
+        rotateOverlay.classList.add('mobile-active');
+      } else {
+        rotateOverlay.classList.remove('mobile-active');
+      }
+    }
+    window.addEventListener('resize', updateOrientationOverlay);
+    window.addEventListener('orientationchange', updateOrientationOverlay);
+    updateOrientationOverlay();
+
+    // ---------- Simulación de teclado para js-dos ----------
+    function keyInfoFor(ch) {
+      if (ch === 'ArrowUp')    return {code:'ArrowUp',    keyCode:38, key:'ArrowUp'};
+      if (ch === 'ArrowDown')  return {code:'ArrowDown',  keyCode:40, key:'ArrowDown'};
+      if (ch === 'ArrowLeft')  return {code:'ArrowLeft',  keyCode:37, key:'ArrowLeft'};
+      if (ch === 'ArrowRight') return {code:'ArrowRight', keyCode:39, key:'ArrowRight'};
+      if (ch === 'Space')      return {code:'Space',      keyCode:32, key:' '};
+      if (ch === 'Alt')        return {code:'AltLeft',    keyCode:18, key:'Alt'};
+      if (ch === 'Enter')      return {code:'Enter',      keyCode:13, key:'Enter'};
+      if (ch === 'Escape')     return {code:'Escape',     keyCode:27, key:'Escape'};
+      if (/^[a-zA-Z]$/.test(ch)) return {code:'Key'+ch.toUpperCase(), keyCode: ch.toUpperCase().charCodeAt(0), key: ch.toLowerCase()};
+      if (/^[0-9]$/.test(ch)) return {code:'Digit'+ch, keyCode: ch.charCodeAt(0), key: ch};
+      return {code:ch, keyCode:0, key:ch};
+    }
+
+    function dispatchKey(type, info) {
+      var ev = new KeyboardEvent(type, {
+        key: info.key, code: info.code, keyCode: info.keyCode, which: info.keyCode,
+        bubbles: true, cancelable: true
+      });
+      var canvas = document.getElementById('jsdos');
+      canvas.dispatchEvent(ev);
+      document.dispatchEvent(ev);
+      window.dispatchEvent(ev);
+    }
+
+    function keyDown(ch) { dispatchKey('keydown', keyInfoFor(ch)); }
+    function keyUp(ch)   { dispatchKey('keyup', keyInfoFor(ch)); }
+
+    function bindHoldButton(el, ch) {
+      var active = false;
+      function press(e) { e.preventDefault(); if (active) return; active = true; el.classList.add('active'); keyDown(ch); }
+      function release(e) { if (e) e.preventDefault(); if (!active) return; active = false; el.classList.remove('active'); keyUp(ch); }
+      el.addEventListener('touchstart', press, {passive:false});
+      el.addEventListener('touchend', release, {passive:false});
+      el.addEventListener('touchcancel', release, {passive:false});
+      el.addEventListener('mousedown', press);
+      el.addEventListener('mouseup', release);
+      el.addEventListener('mouseleave', release);
+    }
+
+    bindHoldButton(document.getElementById('dpadUp'), 'ArrowUp');
+    bindHoldButton(document.getElementById('dpadDown'), 'ArrowDown');
+    bindHoldButton(document.getElementById('dpadLeft'), 'ArrowLeft');
+    bindHoldButton(document.getElementById('dpadRight'), 'ArrowRight');
+    bindHoldButton(document.getElementById('btnFire'), 's');
+    bindHoldButton(document.getElementById('btnUse'), 'w');
+    bindHoldButton(document.getElementById('btnSpeed'), 'Space');
+    bindHoldButton(document.getElementById('btnStrafeMod'), 'Alt');
+    bindHoldButton(document.getElementById('btnStrafeL'), 'a');
+    bindHoldButton(document.getElementById('btnStrafeR'), 'd');
+    bindHoldButton(document.getElementById('btnEnter'), 'Enter');
+    bindHoldButton(document.getElementById('btnEsc'), 'Escape');
+
+    // ---------- Escribir un código de truco letra por letra ----------
+    function typeCheat(str, btn) {
+      var chars = str.split('');
+      var i = 0;
+      if (btn) btn.classList.add('firing');
+      function step() {
+        if (i >= chars.length) { if (btn) btn.classList.remove('firing'); showCheatStatus(str.toUpperCase() + ' activado'); return; }
+        var ch = chars[i];
+        keyDown(ch);
+        setTimeout(function(){ keyUp(ch); }, 40);
+        i++;
+        setTimeout(step, 90);
+      }
+      step();
+    }
+
+    var cheatStatusEl = document.getElementById('cheatStatus');
+    var cheatStatusTimer = null;
+    function showCheatStatus(msg) {
+      cheatStatusEl.textContent = msg;
+      cheatStatusEl.style.display = 'block';
+      clearTimeout(cheatStatusTimer);
+      cheatStatusTimer = setTimeout(function(){ cheatStatusEl.style.display = 'none'; }, 2000);
+    }
+
+    // ---------- Menú de trucos ----------
+    var cheatToggle = document.getElementById('cheatToggle');
+    var cheatPanel = document.getElementById('cheatPanel');
+    cheatToggle.addEventListener('click', function() {
+      cheatPanel.classList.toggle('open');
+    });
+    document.querySelectorAll('.cheat-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        typeCheat(btn.getAttribute('data-cheat'), btn);
+      });
+    });
+
+    // ---------- Fullscreen + intento de bloqueo de orientación ----------
+    function requestRealFullscreen() {
+      var el = document.documentElement;
+      var req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+      if (req) { try { req.call(el).catch ? req.call(el).catch(function(){}) : req.call(el); } catch(e) {} }
+    }
+    document.getElementById('fullscreenBtn').addEventListener('click', function() {
+      requestRealFullscreen();
+      if (window.ci) window.ci.fullscreen();
+      tryLockLandscape();
+      setTimeout(fitGame, 300);
+    });
+    var btnFsMobile = document.getElementById('btnFullscreenMobile');
+    if (btnFsMobile) {
+      btnFsMobile.addEventListener('click', function() {
+        requestRealFullscreen();
+        if (window.ci) window.ci.fullscreen();
+        tryLockLandscape();
+        setTimeout(fitGame, 300);
+      });
+    }
+    function tryLockLandscape() {
+      try {
+        if (screen.orientation && screen.orientation.lock) {
+          screen.orientation.lock('landscape').catch(function(){});
+        }
+      } catch (e) {}
+    }
+    document.addEventListener('fullscreenchange', fitGame);
+    document.addEventListener('webkitfullscreenchange', fitGame);
+
+    // ---------- Inicialización de js-dos ----------
+    Dos(document.getElementById("jsdos"), {
+      wdosboxUrl: "https://js-dos.com/6.22/current/wdosbox.js",
+    }).ready(function (fs, main) {
+      fs.extract("https://js-dos.com/cdn/upload/DOOM-@evilution.zip").then(function () {
+        main(["-c", "cd DOOM", "-c", "DOOM.EXE"]).then(function (ci) {
+          window.ci = ci;
+          if (isTouch) tryLockLandscape();
+        });
+      });
+    });
+  </script>
+</body>
+</html>
