@@ -1,69 +1,69 @@
 name: Build Android APK
 
 on:
-push:
-branches:
-- main
-- master
-workflow_dispatch:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
 
 jobs:
-build:
-name: Build Capacitor Android APK
-runs-on: ubuntu-latest
+  build:
+    name: Build Capacitor Android APK
+    runs-on: ubuntu-latest
 
-steps:
-  - name: Checkout Repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-  - name: Setup Node.js
-    uses: actions/setup-node@v4
-    with:
-      node-version: 20
-      cache: 'npm'
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
 
-  - name: Setup Java JDK
-    uses: actions/setup-java@v4
-    with:
-      distribution: 'zulu'
-      java-version: '17'
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
 
-  - name: Install NPM Dependencies
-    run: |
-      npm ci || npm install
+      - name: Install NPM Dependencies
+        run: |
+          npm ci || npm install
 
-  - name: Generate App Icons
-    run: |
-      if [ -f "icon.png" ]; then
-        echo "Procesando icon.png..."
-        npx @capacitor/assets generate --iconAvailable icon.png || true
-      elif [ -f "icon.svg" ]; then
-        echo "Procesando icon.svg..."
-        npx @capacitor/assets generate --iconAvailable icon.svg || true
-      else
-        echo "No se encontró ningún archivo de icono (icon.png o icon.svg)."
-      fi
+      - name: Generate App Icons
+        run: |
+          if [ -f "icon.png" ]; then
+            echo "Procesando icon.png..."
+            npx @capacitor/assets generate --iconAvailable icon.png || true
+          elif [ -f "icon.svg" ]; then
+            echo "Procesando icon.svg..."
+            npx @capacitor/assets generate --iconAvailable icon.svg || true
+          else
+            echo "No se encontró ningún archivo de icono (icon.png o icon.svg)."
+          fi
 
-  - name: Sync Capacitor Project
-    run: |
-      if [ ! -d "android" ]; then
-        npx cap add android
-      fi
-      npx cap sync android
+      - name: Sync Capacitor Project
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          npx cap sync android
 
-  - name: Make Gradle Executable
-    run: |
-      cd android
-      chmod +x gradlew
+      - name: Make Gradle Executable
+        run: |
+          cd android
+          chmod +x gradlew
 
-  - name: Build Android Debug APK
-    run: |
-      cd android
-      ./gradlew assembleDebug --stacktrace
+      - name: Build Android Debug APK
+        run: |
+          cd android
+          ./gradlew assembleDebug --stacktrace
 
-  - name: Upload APK Artifact
-    uses: actions/upload-artifact@v4
-    with:
-      name: DOOM-Mobile-Debug-APK
-      path: android/app/build/outputs/apk/debug/app-debug.apk
-      retention-days: 14
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: DOOM-Mobile-Debug-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 14
