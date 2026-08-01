@@ -31,24 +31,25 @@ jobs:
         run: |
           npm install
 
-      - name: Generate App Icons
-        run: |
-          if [ -f "icon.png" ]; then
-            echo "Procesando icon.png..."
-            npx @capacitor/assets generate --iconAvailable icon.png || true
-          elif [ -f "icon.svg" ]; then
-            echo "Procesando icon.svg..."
-            npx @capacitor/assets generate --iconAvailable icon.svg || true
-          else
-            echo "No se encontró ningún archivo de icono (icon.png o icon.svg)."
-          fi
-
       - name: Sync Capacitor Project
+        # IMPORTANTE: Esto debe ir ANTES de los iconos para que exista la carpeta "android"
         run: |
           if [ ! -d "android" ]; then
             npx cap add android
           fi
           npx cap sync android
+
+      - name: Generate App Icons
+        # Preparamos la carpeta que exige Capacitor y generamos los recursos de Android
+        run: |
+          mkdir -p assets
+          if [ -f "icon.png" ]; then
+            echo "Copiando icon.png a la carpeta assets..."
+            cp icon.png assets/icon.png
+            npx @capacitor/assets generate --android
+          else
+            echo "ATENCIÓN: No se encontró icon.png en la raíz del repositorio."
+          fi
 
       - name: Make Gradle Executable
         run: |
