@@ -50,17 +50,30 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: width 0.1s ease, height 0.1s ease;
+    overflow: hidden;
   }
 
-  #jsdos {
-    width: 100% !important;
-    height: 100% !important;
-    position: absolute;
-    top: 0;
-    left: 0;
+  /* Forzar al lienzo del juego a duplicar su área visual al 100% llenando toda la pantalla */
+  #jsdos, 
+  #jsdos canvas, 
+  .game-container canvas {
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-width: none !important;
+    max-height: none !important;
+    position: absolute !important;
+    top: 50% !important;
+    left: 50% !important;
+    transform: translate(-50%, -50%) !important;
+    transform-origin: center center !important;
+    object-fit: fill !important;
+    object-position: center center !important;
+    margin: 0 !important;
+    padding: 0 !important;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+    display: block !important;
   }
 
   .post-processing {
@@ -286,12 +299,14 @@
   #dpadLeft  { top: 51px; left: 0; }
   #dpadRight { top: 51px; right: 0; }
 
-  #btnFire   { right: 15px; bottom: 15px; }
-  #btnUse    { right: 100px; bottom: 15px; }
-  #btnSpeed  { right: 15px; bottom: 100px; }
-  #btnStrafeMod { right: 100px; bottom: 100px; }
-  #btnEnter  { right: 180px; bottom: 15px; }
-  #btnEsc    { right: 180px; bottom: 100px; }
+  /* Posicionamiento de la botonera manteniendo las dimensiones exactas */
+  #btnFire     { right: 15px; bottom: 15px; }
+  #btnUse      { right: 100px; bottom: 15px; }
+  #btnWeapon   { right: 180px; bottom: 15px; } /* Nuevo Botón de Selección de Arma */
+  #btnSpeed    { right: 15px; bottom: 100px; }
+  #btnStrafeMod{ right: 100px; bottom: 100px; }
+  #btnEnter    { right: 180px; bottom: 100px; }
+  #btnEsc      { right: 255px; bottom: 100px; }
 </style>
 <script src="https://js-dos.com/6.22/current/js-dos.js"></script>
 </head>
@@ -322,6 +337,7 @@
 
   <div class="container">
     <div class="game-container" id="gameContainer">
+      <!-- Changed from <div> to <canvas> for JS-DOS 6.22 initialization -->
       <canvas id="jsdos"></canvas>
       <div class="post-processing">
         <div class="vignette"></div>
@@ -329,6 +345,7 @@
     </div>
   </div>
 
+  <!-- Controles Táctiles (Mismo tamaño de botones + Botón de cambio de Arma) -->
   <div class="touch-controls">
     <div class="dpad">
       <div class="touch-btn" id="dpadUp"><i class="fas fa-arrow-up"></i></div>
@@ -338,6 +355,7 @@
     </div>
     <div class="touch-btn big" id="btnFire">Fuego</div>
     <div class="touch-btn small" id="btnUse">Usar</div>
+    <div class="touch-btn small" id="btnWeapon"><i class="fas fa-gun"></i> Arma 1</div>
     <div class="touch-btn small" id="btnSpeed">Run</div>
     <div class="touch-btn small" id="btnStrafeMod">Alt</div>
     <div class="touch-btn small" id="btnEnter">Enter</div>
@@ -347,57 +365,37 @@
   <script type="text/javascript">
     var gameContainer = document.getElementById('gameContainer');
     var screenModeBtn = document.getElementById('screenModeBtn');
-    var jsdosCanvas = document.getElementById('jsdos');
     var ASPECT = 4 / 3;
 
     var modes = ['stretch', 'fill', 'fit'];
     var modeNames = {
-      'stretch': 'Pantalla: Máximo 100% (Auto)',
+      'stretch': 'Pantalla: Estirar (100%)',
       'fill': 'Pantalla: Zoom Inteligente',
       'fit': 'Pantalla: Clásica (4:3)'
     };
     var currentModeIndex = 0;
 
+    function forceCanvasResize() {
+      var canvases = document.querySelectorAll('#jsdos canvas, .game-container canvas, canvas#jsdos');
+      canvases.forEach(function(canvas) {
+        canvas.style.setProperty('width', '100vw', 'important');
+        canvas.style.setProperty('height', '100vh', 'important');
+        canvas.style.setProperty('object-fit', 'fill', 'important');
+        canvas.style.setProperty('top', '50%', 'important');
+        canvas.style.setProperty('left', '50%', 'important');
+        canvas.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
+        canvas.style.setProperty('margin', '0', 'important');
+      });
+    }
+
     function fitGame() {
       var vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
       var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-      
-      if (window.screen && window.screen.width && window.screen.height) {
-        var isLandscape = Math.abs(window.orientation || 0) === 90 || vw > vh;
-        if (isLandscape) {
-          vw = Math.max(vw, Math.max(window.screen.width, window.screen.height));
-          vh = Math.min(vh, Math.min(window.screen.width, window.screen.height));
-        }
-      }
 
-      var currentMode = modes[currentModeIndex];
-      var w = vw;
-      var h = vh;
+      gameContainer.style.width = '100vw';
+      gameContainer.style.height = '100dvh';
 
-      if (currentMode === 'stretch') {
-        w = vw;
-        h = vh;
-      } else if (currentMode === 'fill') {
-        var scale = Math.max(vw / 800, vh / 600);
-        w = 800 * scale;
-        h = 600 * scale;
-      } else if (currentMode === 'fit') {
-        if (vw / vh > ASPECT) {
-          h = vh;
-          w = h * ASPECT;
-        } else {
-          w = vw;
-          h = w / ASPECT;
-        }
-      }
-
-      gameContainer.style.width = Math.ceil(w) + 'px';
-      gameContainer.style.height = Math.ceil(h) + 'px';
-
-      if (jsdosCanvas) {
-        jsdosCanvas.style.width = '100%';
-        jsdosCanvas.style.height = '100%';
-      }
+      forceCanvasResize();
     }
 
     screenModeBtn.addEventListener('click', function() {
@@ -427,6 +425,7 @@
       if (ch === 'Alt')        return {code:'AltLeft', keyCode:18, key:'Alt'};
       if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter'};
       if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape'};
+      if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch};
       return {
         code: 'Key' + ch.toUpperCase(), 
         keyCode: ch.toUpperCase().charCodeAt(0), 
@@ -487,6 +486,30 @@
     bindHoldButton(document.getElementById('btnEnter'), 'Enter');
     bindHoldButton(document.getElementById('btnEsc'), 'Escape');
 
+    /* Lógica del Botón de Selección de Arma */
+    var currentWeapon = 1;
+    var btnWeapon = document.getElementById('btnWeapon');
+
+    function cycleWeapon(e) {
+      if (e) e.preventDefault();
+      currentWeapon = (currentWeapon % 7) + 1;
+      if (btnWeapon) {
+        btnWeapon.innerHTML = '<i class="fas fa-gun"></i> Arma ' + currentWeapon;
+        btnWeapon.classList.add('active');
+        setTimeout(function() { btnWeapon.classList.remove('active'); }, 150);
+      }
+      var weaponKey = String(currentWeapon);
+      dispatchKey('keydown', keyInfoFor(weaponKey));
+      setTimeout(function() {
+        dispatchKey('keyup', keyInfoFor(weaponKey));
+      }, 50);
+    }
+
+    if (btnWeapon) {
+      btnWeapon.addEventListener('touchstart', cycleWeapon, {passive: false});
+      btnWeapon.addEventListener('mousedown', cycleWeapon);
+    }
+
     var cheatToggle = document.getElementById('cheatToggle');
     var cheatPanel = document.getElementById('cheatPanel');
 
@@ -524,14 +547,20 @@
     });
 
     window.onload = function() {
-      Dos(document.getElementById("jsdos"), {
+      var jsdosCanvas = document.getElementById("jsdos");
+      if (!jsdosCanvas) return;
+
+      Dos(jsdosCanvas, {
         wdosboxUrl: "https://js-dos.com/6.22/current/wdosbox.js",
       }).ready(function (fs, main) {
         fs.extract("https://js-dos.com/cdn/upload/DOOM-@evilution.zip").then(function () {
           main(["-c", "cd DOOM", "-c", "DOOM.EXE"]).then(function (ci) {
             window.ci = ci;
             fitGame();
+            setInterval(forceCanvasResize, 1000);
           });
+        }).catch(function (err) {
+          console.error("Error extracted Doom executable:", err);
         });
       });
     };
