@@ -17,7 +17,17 @@ jobs:
       - name: Instalar dependencias
         run: npm install
 
-      - name: Sincronizar Capacitor (usa android/ ya commiteada, no la regenera)
+      - name: Generar proyecto Android completo (gradlew incluido)
+        run: npx cap add android
+
+      - name: Aplicar personalizaciones nativas (fullscreen, landscape, tema)
+        run: |
+          mkdir -p android/app/src/main/java/com/tuempresa/doomweb
+          cp native-patches/MainActivity.java android/app/src/main/java/com/tuempresa/doomweb/MainActivity.java
+          cp native-patches/styles.xml android/app/src/main/res/values/styles.xml
+          cp native-patches/AndroidManifest.xml android/app/src/main/AndroidManifest.xml
+
+      - name: Sincronizar Capacitor
         run: npx cap sync android
 
       - name: Configurar JDK
