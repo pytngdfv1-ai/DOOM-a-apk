@@ -1,42 +1,58 @@
-💀 DOOM (1993) — Guía y Manual del Juego Clásico
+💀 DOOM Mobile — Guía del Juego y Documentación Técnica
 
-DOOM es un videojuego de disparos en primera persona (FPS) pionero, desarrollado por id Software y lanzado originalmente en 1993. Definó las bases del género y se convirtió en uno de los títulos más influyentes en la historia de los videojuegos.
+Adaptación web y móvil optimizada del legendario DOOM (1993) ejecutable en cualquier navegador o empaquetada como aplicación nativa para Android mediante Capacitor. Cuenta con controles táctiles avanzados, menú de trucos integrado, selector de armas de acceso rápido, botón de automapa y lienzo autoajustable al 100% de la pantalla.
 
-📜 Historia y Argumento
+📋 Tabla de Contenidos
 
-Tomas el papel de un marine espacial sin nombre (popularmente conocido como Doomguy). Tras agredir a un oficial superior que ordenó disparar contra civiles desarmados, eres transferido como castigo a la base militar de la UAC (Union Aerospace Corporation) en Fobos, una de las lunas de Marte.
+📖 Manual y Guía del Juego Clásico
 
-La UAC realizaba experimentos secretos de teletransportación entre Fobos y Deimos. Algo sale catastróficamente mal: los portales se abren de par en par al mismísimo Infierno, permitiendo que hordas de demonios invadan las instalaciones y masacren a todo el personal. Tu objetivo es sobrevivir, erradicar la amenaza demoníaca y cerrar las puertas del Infierno.
+Historia y Argumento
 
-🎮 Episodios del Juego
+Episodios
 
-Episodio 1: Knee-Deep in the Dead (Hasta el cuello con los muertos)
+Arsenal de Armas
 
-Escenario: Base militar de Fobos.
+Bestiario Demoníaco
 
-Jefe Final: Los Bruiser Brothers (dos Barones del Infierno en E1M8).
+Códigos de Trucos
 
-Episodio 2: The Shores of Hell (Las orillas del Infierno)
+📱 Características de la Versión Móvil
 
-Escenario: Instalaciones de Deimos corrompidas por la biomasa demoníaca.
+🛠️ Estructura del Proyecto
 
-Jefe Final: El Cyberdemon (E2M8).
+🎨 Icono de la App (icon.png)
 
-Episodio 3: Inferno (Infierno)
+⚙️ Compilación Local y GitHub Actions
 
-Escenario: La superficie misma del Infierno.
+Compilación Local
 
-Jefe Final: El Spider Mastermind (E3M8).
+Compilación Automática (APK Debug)
 
-🔫 Arsenal de Armas
+📜 Licencia y Créditos
+
+📖 Manual y Guía del Juego Clásico
+
+Historia y Argumento
+
+Tomas el papel de un marine espacial (Doomguy). Tras ser castigado y enviado a las instalaciones militares de la UAC (Union Aerospace Corporation) en Fobos (luna de Marte), un experimento fallido de teletransportación abre un portal directo al Infierno. Los demonios invaden la base militar, masacrando a todo el personal. Tu único objetivo es sobrevivir, erradicar la horda demoníaca y cerrar el portal.
+
+Episodios
+
+Episodio 1: Knee-Deep in the Dead (Base militar de Fobos). Jefe: Bruiser Brothers.
+
+Episodio 2: The Shores of Hell (Instalaciones corrompidas de Deimos). Jefe: Cyberdemon.
+
+Episodio 3: Inferno (La superficie del Infierno). Jefe: Spider Mastermind.
+
+Arsenal de Armas
 
 N°
 
 Arma
 
-Tipo de Munición
+Munición
 
-Descripción
+Uso Recomendado
 
 1
 
@@ -44,7 +60,7 @@ Puño / Motosierra
 
 Sin consumo
 
-Combate cuerpo a cuerpo. La motosierra destroza enemigos pequeños.
+Combate cuerpo a cuerpo.
 
 2
 
@@ -52,7 +68,7 @@ Pistola
 
 Balas
 
-Arma inicial básica. Precisa a larga distancia.
+Arma básica de inicio.
 
 3
 
@@ -60,7 +76,7 @@ Escopeta
 
 Cartuchos
 
-Arma principal a corta/media distancia. Devastadora en grupos de enemigos.
+Altamente efectiva a corta/media distancia.
 
 4
 
@@ -68,7 +84,7 @@ Ametralladora (Chaingun)
 
 Balas
 
-Disparo continuo rápido. Inmoviliza enemigos al ser atacados rápidamente.
+Disparo rápido continuo; inmoviliza a los enemigos.
 
 5
 
@@ -76,221 +92,140 @@ Lanzacohetes
 
 Cohetes
 
-Gran daño de área. ¡Cuidado con el daño por explosión cercana!
+Daño masivo de área (atención al daño cercano).
 
 6
 
 Rifle de Plasma
 
-Células de energía
+Células
 
-Dispara ráfagas veloces de proyectiles de energía azul.
+Proyectiles energéticos ultrarrápidos.
 
 7
 
 BFG 9000
 
-Células de energía (40 por disparo)
+Células (40/disparo)
 
-La máxima arma de destrucción. Limpia habitaciones enteras de un disparo.
+Devastación total de habitaciones completas.
 
-👹 Bestiario Demoníaco
+Bestiario Demoníaco
 
-Zombieman / Shotgun Guy / Heavy Weapon Dude: Antiguos soldados humanos poseídos.
+Zombieman / Shotgun Guy: Soldados poseídos armados.
 
-Imp: Demonios marrones que lanzan bolas de fuego.
+Imp: Demonios marrones que lanzan proyectiles de fuego.
 
-Demon (Pinky) / Spectre: Bestias cuadrúpedas voraces (los espectros son invisibles).
+Demon (Pinky) / Spectre: Bestias voraces (los espectros son semitransparentes).
 
-Cacodemon: Esferas voladoras rojas de un solo ojo que lanzan bolas de plasma.
+Cacodemon: Demonios voladores rojos que disparan plasma.
 
-Baron of Hell: Demonios gigantes con cuernos que lanzan fuego verde.
+Baron of Hell: Demonios gigantes con cuernos y fuego verde.
 
-Cyberdemon: Híbrido demonio/máquina gigante con un lanzacohetes en el brazo.
+Cyberdemon: Híbrido demonio/máquina armado con lanzacohetes.
 
-Spider Mastermind: Cerebro gigante montado sobre patas mecánicas con ametralladora pesada.
+Spider Mastermind: Cerebro gigante cibernético con metralleta pesada.
 
-🧪 Códigos de Trucos (Cheat Codes)
+Códigos de Trucos (Cheat Codes)
 
-Ingresa estos códigos en cualquier momento durante la partida para activar ventajas:
+Puedes activarlos en cualquier momento desde el menú flotante de Trucos en la barra superior o ingresándolos por teclado:
 
-IDDQD — Modo Dios (Invencibilidad total y ojos amarillos en la interfaz).
+IDDQD — Modo Dios (Invencibilidad total).
 
-IDKFA — Armas, Llaves y Munición Máxima (Otorga todo el arsenal y tarjetas de acceso).
+IDKFA — Armas, Llaves y Munición Máxima.
 
-IDFA — Armas y Munición Máxima (Sin otorgar llaves).
+IDFA — Armas y Munición Máxima (Sin llaves).
 
-IDCLIP — Atravesar Paredes (Permite caminar a través de muros y obstáculos).
+IDCLIP — Atravesar Muros (Noclip).
 
 IDBEHOLDS — Modo Berserk (Multiplica por 10 el daño de los puños).
 
 IDBEHOLDV — Invulnerabilidad Temporal.
 
-IDBEHOLDI — Invisibilidad Parcial (Los enemigos tienen dificultades para apuntarte).
+IDBEHOLDI — Invisibilidad Parcial.
 
-IDBEHOLDA — Revelar Mapa Completo.
+IDBEHOLDA — Mapa Completo Revelado.
 
-IDCLEVxy — Salto de Nivel (donde x es el episodio e y el nivel; ej: IDCLEV11 para E1M1).
+📱 Características de la Versión Móvil
 
-📜 Licencia y Créditos
+Lienzo Autoajustable al 100%: El juego se centra dinámicamente (top: 50%, left: 50%) y se estira para cubrir completamente la pantalla del dispositivo en modo horizontal.
 
-DOOM fue creado por John Carmack, John Romero, Adrian Carmack, Kevin Cloud y Sandy Petersen. El código fuente de Doom fue liberado bajo la licencia GPL en 1997.
+D-Pad táctil: Controles direccionales fluidos (Arriba, Abajo, Izquierda, Derecha).
 
+Botonera de Acción: Botones dedicados para Fuego (s), Usar/Abrir puertas (w), Carrera (Space), Modificador Strafe (Alt), Enter y Esc.
 
+Ajuste de Opacidad de Botones: Botón dedicado para alternar la transparencia de la interfaz táctil en 5 niveles (20%, 35%, 50%, 75%, 100%).
 
-📱 DOOM Mobile Edition (Capacitor & WebApp)
+Panel de Selección de Armas: Desplegable superior para cambiar al instante a cualquier arma del 1 al 7.
 
-Esta es una versión web y nativa para Android/iOS de DOOM (1993) emulada con js-dos v6.22 (DOSBox compilado a WebAssembly) y empaquetada con Capacitor para ejecutarse como una aplicación móvil nativa a pantalla completa.
+Botón de Automapa (MAP): Alterna rápidamente la vista del mapa con un toque enviando la tecla Tab.
 
-🚀 Características de esta Versión Móvil
+Soporte PWA / APK: Funciona sin instalación directa desde el navegador o dentro de un contenedor nativo Android con Capacitor.
 
-Pantalla Adaptativa y Centrada:
+🛠️ Estructura del Proyecto
 
-El lienzo <canvas> se escala dinámicamente y se ubica de forma absolutamente centrada en el dispositivo mediante coordenadas CSS (top: 50%, left: 50%, transform: translate(-50%, -50%)).
-
-Soporta 3 modos de visualización intercambiables en tiempo real:
-
-Estirar (100%): Llena toda la pantalla del teléfono sin barras negras.
-
-Zoom Inteligente: Maximiza el área manteniendo cobertura total.
-
-Clásica (4:3): Conserva la relación de aspecto original de MS-DOS.
-
-Controles Táctiles Integrados:
-
-D-Pad (Cruceta) para movimiento preciso.
-
-Botones táctiles dedicados para Fuego, Usar (W), Correr (Shift/Space), Alt (Strafe), Enter y Esc.
-
-Nuevo Selector de Arma: Botón conmutador que permite rotar secuencialmente entre las armas (1 al 7) con un solo toque.
-
-Control de Atenuación de Botones (Opacidad):
-
-Ajuste rápido de transparencia de la interfaz táctil (20%, 35%, 50%, 75%, 100%) para evitar tapar la visibilidad de la acción.
-
-Respuesta táctil visual con encendido luminoso al presionar cualquier botón.
-
-Panel de Trucos Táctil:
-
-Menú desplegable en la barra superior con botones para ejecutar automáticamente los comandos principales (IDDQD, IDKFA, IDCLIP, IDBEHOLD, etc.).
-
-Bloqueo de Orientación:
-
-Pantalla de advertencia automática para forzar al usuario a colocar el teléfono en modo horizontal (Landscape).
-
-📂 Estructura del Proyecto
-
-doom-mobile-app/
+DOOM-Mobile/
 ├── .github/
 │   └── workflows/
-│       └── build-apk.yml        # Workflow para generar APK automáticamente en GitHub Actions
+│       └── build-apk.yml        # Workflow para generar APK en GitHub Actions
 ├── www/
-│   └── index.html               # Aplicación web completa (HTML + CSS + JS en un solo archivo)
-├── capacitor.config.json        # Configuración del contenedor nativo de Capacitor
-├── native-patches/              # Ajustes de AndroidManifest.xml y permisos
-├── package.json                 # Dependencias del proyecto Node/Capacitor
-└── README.md                    # Este archivo de documentación
+│   └── index.html               # Juego web completo (HTML + CSS + JS)
+├── icon.png                     # 📍 Icono oficial de la APK (1024x1024 px)
+├── icon.svg                     # Versión vectorial del icono (opcional)
+├── preview_icon.html            # Visualizador y exportador del icono a PNG
+├── capacitor.config.json        # Configuración del contenedor nativo Capacitor
+├── package.json                 # Dependencias Node / Capacitor
+└── README.md                    # Documentación unificada
 
 
-🛠️ Tecnologías Utilizadas
+🎨 Icono de la App (icon.png)
 
-HTML5 Canvas & WebGL: Renderizado gráfico del motor de DOS.
+Para que la APK generada tenga el icono personalizado:
 
-js-dos 6.22 / wdosbox.js: Emulación de MS-DOS ejecutable en navegador vía WebAssembly.
+El archivo icon.png debe estar ubicado en la raíz principal del repositorio (junto a package.json e index.html).
 
-Capacitor (Ionic Framework): Encapsulamiento del código web en una App Nativa de Android (.apk).
+Debe ser una imagen cuadrada de alta resolución en formato PNG de 1024x1024 píxeles.
 
-FontAwesome 6.4: Iconografía ligera para controles táctiles y barra superior.
+También puedes abrir preview_icon.html en un navegador web y hacer clic en "Descargar PNG (1024x1024)" para obtener la imagen exacta optimizada.
 
-📦 Compilación y Empaquetado
+⚙️ Compilación Local y GitHub Actions
 
-Requisitos Previos
-
-Node.js (v18+)
-
-Android Studio y SDK de Android (para compilación local)
-
-Comandos de Compilación Local
+Compilación Local
 
 # 1. Instalar dependencias
 npm install
 
-# 2. Inicializar plataforma Android (si aún no está creada)
+# 2. Generar iconos de Android desde icon.png
+npx @capacitor/assets generate --iconAvailable icon.png
+
+# 3. Añadir plataforma Android (si no existe)
 npx cap add android
 
-# 3. Sincronizar los cambios de la carpeta /www con el proyecto Android
+# 4. Sincronizar archivos de www/ con Android
 npx cap sync android
 
-# 4. Abrir en Android Studio para compilar la APK final
+# 5. Abrir en Android Studio para compilar APK
 npx cap open android
 
 
-Compilación Automática con GitHub Actions
+Compilación Automática en GitHub Actions
 
-El repositorio incluye un workflow que compila el APK en la nube cada vez que realizas un push a la rama principal:
+El repositorio cuenta con el flujo automatizado .github/workflows/build-apk.yml.
 
-Ve a la pestaña Actions en tu repositorio de GitHub.
+Cada vez que realizas un git push a las ramas main o master:
 
-Selecciona el flujo Enhance APK build workflow.
+GitHub Actions inicializa el entorno con Node 20 y Java JDK 17.
 
-Descarga el artefacto app-debug.apk generado al finalizar la compilación.
+Detecta la presencia de icon.png en la raíz del repositorio y genera las resoluciones nativas (mipmap-*).
 
-📱 Mapa de Teclas Interno (JS-DOS Mapping)
+Sincroniza el proyecto con Capacitor y compila la APK debug mediante ./gradlew assembleDebug.
 
-Botón Táctil
+Sube la APK terminada como un Artefacto descargable (DOOM-Mobile-Debug-APK) en la sección Actions de tu repositorio.
 
-Tecla Simulada en DOS
+📜 Licencia y Créditos
 
-Función en el Juego
+DOOM (1993): Desarrollado originalmente por John Carmack, John Romero, Adrian Carmack, Kevin Cloud y Sandy Petersen en id Software.
 
-D-Pad
+Motor Emulado: Impulsado en la web a través de JS-DOS.
 
-ArrowUp, ArrowDown, ArrowLeft, ArrowRight
-
-Desplazamiento y giro
-
-Fuego
-
-S
-
-Disparar arma actual
-
-Usar
-
-W
-
-Abrir puertas / activar interruptores
-
-Arma [1-7]
-
-1, 2, 3, 4, 5, 6, 7
-
-Cambiar de arma secuencialmente
-
-Run
-
-Space / Shift
-
-Mantener para correr
-
-Alt
-
-Alt
-
-Modificador de strafe (desplazamiento lateral)
-
-Enter
-
-Enter
-
-Confirmar en menús
-
-Esc
-
-Escape
-
-Pausa y menú principal
-
-📄 Licencia
-
-Distribución libre para fines educativos y de preservación de software clásico. El motor de juego utiliza la versión shareware liberada de DOOM 1.9.
+Código Fuente de Doom: Publicado bajo la licencia GNU General Public License (GPL) en 1997.
