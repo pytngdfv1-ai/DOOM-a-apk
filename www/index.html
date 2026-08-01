@@ -183,7 +183,26 @@
 
   #cheatPanel.open { display: block; }
 
-  #cheatPanel h4 {
+  #weaponPanel {
+    position: fixed;
+    top: 50px; 
+    left: 90px;
+    z-index: 65;
+    pointer-events: auto;
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid #444;
+    border-radius: 8px;
+    padding: 12px;
+    width: 220px;
+    max-height: 70vh;
+    overflow-y: auto;
+    display: none;
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+  }
+
+  #weaponPanel.open { display: block; }
+
+  #cheatPanel h4, #weaponPanel h4 {
     margin: 0 0 10px 0;
     color: #ff4444;
     font-size: 13px;
@@ -191,7 +210,7 @@
     padding-bottom: 6px;
   }
 
-  .cheat-btn {
+  .cheat-btn, .weapon-btn {
     display: block; 
     width: 100%; 
     text-align: left;
@@ -205,12 +224,12 @@
     cursor: pointer;
   }
 
-  .cheat-btn:active { 
+  .cheat-btn:active, .weapon-btn:active { 
     background: #ff4444; 
     color: #000;
   }
 
-  .cheat-btn small {
+  .cheat-btn small, .weapon-btn small {
     display: block;
     color: #888;
     font-size: 9px;
@@ -302,7 +321,6 @@
   /* Posicionamiento de la botonera manteniendo las dimensiones exactas */
   #btnFire     { right: 15px; bottom: 15px; }
   #btnUse      { right: 100px; bottom: 15px; }
-  #btnWeapon   { right: 180px; bottom: 15px; } /* Nuevo Botón de Selección de Arma */
   #btnSpeed    { right: 15px; bottom: 100px; }
   #btnStrafeMod{ right: 100px; bottom: 100px; }
   #btnEnter    { right: 180px; bottom: 100px; }
@@ -319,8 +337,9 @@
 
   <div class="top-bar">
     <button id="cheatToggle" class="top-btn"><i class="fas fa-flask"></i> Trucos</button>
+    <button id="weaponToggle" class="top-btn"><i class="fas fa-gun"></i> Armas</button>
     <button id="opacityBtn" class="top-btn"><i class="fas fa-eye"></i> Botones: 35%</button>
-    <button id="screenModeBtn" class="top-btn"><i class="fas fa-expand"></i> Pantalla: Estirar (100%)</button>
+    <button id="btnMap" class="top-btn"><i class="fas fa-map-marked-alt"></i> Mapa (MAP)</button>
   </div>
 
   <div id="cheatPanel">
@@ -335,6 +354,17 @@
     <button class="cheat-btn" data-cheat="idbeholda">Mapa Completo<small>IDBEHOLDA</small></button>
   </div>
 
+  <div id="weaponPanel">
+    <h4>Selección de Arma</h4>
+    <button class="weapon-btn" data-weapon="1">1. Puño / Motosierra<small>Tecla 1</small></button>
+    <button class="weapon-btn" data-weapon="2">2. Pistola<small>Tecla 2</small></button>
+    <button class="weapon-btn" data-weapon="3">3. Escopeta<small>Tecla 3</small></button>
+    <button class="weapon-btn" data-weapon="4">4. Ametralladora (Chaingun)<small>Tecla 4</small></button>
+    <button class="weapon-btn" data-weapon="5">5. Lanzacohetes<small>Tecla 5</small></button>
+    <button class="weapon-btn" data-weapon="6">6. Rifle de Plasma<small>Tecla 6</small></button>
+    <button class="weapon-btn" data-weapon="7">7. BFG 9000<small>Tecla 7</small></button>
+  </div>
+
   <div class="container">
     <div class="game-container" id="gameContainer">
       <!-- Changed from <div> to <canvas> for JS-DOS 6.22 initialization -->
@@ -346,6 +376,7 @@
   </div>
 
   <!-- Controles Táctiles (Mismo tamaño de botones + Botón de cambio de Arma) -->
+  <!-- Controles Táctiles -->
   <div class="touch-controls">
     <div class="dpad">
       <div class="touch-btn" id="dpadUp"><i class="fas fa-arrow-up"></i></div>
@@ -355,7 +386,6 @@
     </div>
     <div class="touch-btn big" id="btnFire">Fuego</div>
     <div class="touch-btn small" id="btnUse">Usar</div>
-    <div class="touch-btn small" id="btnWeapon"><i class="fas fa-gun"></i> Arma 1</div>
     <div class="touch-btn small" id="btnSpeed">Run</div>
     <div class="touch-btn small" id="btnStrafeMod">Alt</div>
     <div class="touch-btn small" id="btnEnter">Enter</div>
@@ -364,16 +394,6 @@
 
   <script type="text/javascript">
     var gameContainer = document.getElementById('gameContainer');
-    var screenModeBtn = document.getElementById('screenModeBtn');
-    var ASPECT = 4 / 3;
-
-    var modes = ['stretch', 'fill', 'fit'];
-    var modeNames = {
-      'stretch': 'Pantalla: Estirar (100%)',
-      'fill': 'Pantalla: Zoom Inteligente',
-      'fit': 'Pantalla: Clásica (4:3)'
-    };
-    var currentModeIndex = 0;
 
     function forceCanvasResize() {
       var canvases = document.querySelectorAll('#jsdos canvas, .game-container canvas, canvas#jsdos');
@@ -389,21 +409,10 @@
     }
 
     function fitGame() {
-      var vw = window.visualViewport ? window.visualViewport.width : window.innerWidth;
-      var vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
-
       gameContainer.style.width = '100vw';
       gameContainer.style.height = '100dvh';
-
       forceCanvasResize();
     }
-
-    screenModeBtn.addEventListener('click', function() {
-      currentModeIndex = (currentModeIndex + 1) % modes.length;
-      var newMode = modes[currentModeIndex];
-      screenModeBtn.innerHTML = '<i class="fas fa-expand"></i> ' + modeNames[newMode];
-      fitGame();
-    });
 
     fitGame();
     window.addEventListener('resize', fitGame);
@@ -417,6 +426,7 @@
     document.body.classList.add('is-touch');
 
     function keyInfoFor(ch) {
+      if (ch === 'Tab')        return {code:'Tab', keyCode:9, key:'Tab'};
       if (ch === 'ArrowUp')    return {code:'ArrowUp', keyCode:38, key:'ArrowUp'};
       if (ch === 'ArrowDown')  return {code:'ArrowDown', keyCode:40, key:'ArrowDown'};
       if (ch === 'ArrowLeft')  return {code:'ArrowLeft', keyCode:37, key:'ArrowLeft'};
@@ -431,6 +441,19 @@
         keyCode: ch.toUpperCase().charCodeAt(0), 
         key: ch.toLowerCase()
       };
+    }
+
+    /* Botón Mapa (MAP) - Emite la tecla Tab */
+    var btnMap = document.getElementById('btnMap');
+    if (btnMap) {
+      btnMap.addEventListener('click', function(e) {
+        if (e) e.preventDefault();
+        var tabInfo = keyInfoFor('Tab');
+        dispatchKey('keydown', tabInfo);
+        setTimeout(function() {
+          dispatchKey('keyup', tabInfo);
+        }, 80);
+      });
     }
 
     function dispatchKey(type, info) {
@@ -486,35 +509,37 @@
     bindHoldButton(document.getElementById('btnEnter'), 'Enter');
     bindHoldButton(document.getElementById('btnEsc'), 'Escape');
 
-    /* Lógica del Botón de Selección de Arma */
-    var currentWeapon = 1;
-    var btnWeapon = document.getElementById('btnWeapon');
-
-    function cycleWeapon(e) {
-      if (e) e.preventDefault();
-      currentWeapon = (currentWeapon % 7) + 1;
-      if (btnWeapon) {
-        btnWeapon.innerHTML = '<i class="fas fa-gun"></i> Arma ' + currentWeapon;
-        btnWeapon.classList.add('active');
-        setTimeout(function() { btnWeapon.classList.remove('active'); }, 150);
-      }
-      var weaponKey = String(currentWeapon);
-      dispatchKey('keydown', keyInfoFor(weaponKey));
-      setTimeout(function() {
-        dispatchKey('keyup', keyInfoFor(weaponKey));
-      }, 50);
-    }
-
-    if (btnWeapon) {
-      btnWeapon.addEventListener('touchstart', cycleWeapon, {passive: false});
-      btnWeapon.addEventListener('mousedown', cycleWeapon);
-    }
-
+    /* Lógica del Panel de Selección de Armas en la Barra Superior */
+    var weaponToggle = document.getElementById('weaponToggle');
+    var weaponPanel = document.getElementById('weaponPanel');
     var cheatToggle = document.getElementById('cheatToggle');
     var cheatPanel = document.getElementById('cheatPanel');
 
-    cheatToggle.addEventListener('click', function() { 
-      cheatPanel.classList.toggle('open'); 
+    if (weaponToggle && weaponPanel) {
+      weaponToggle.addEventListener('click', function() {
+        if (cheatPanel) cheatPanel.classList.remove('open');
+        weaponPanel.classList.toggle('open');
+      });
+    }
+
+    if (cheatToggle && cheatPanel) {
+      cheatToggle.addEventListener('click', function() {
+        if (weaponPanel) weaponPanel.classList.remove('open');
+        cheatPanel.classList.toggle('open');
+      });
+    }
+
+    document.querySelectorAll('.weapon-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var weaponNum = btn.getAttribute('data-weapon');
+        if (!weaponNum) return;
+        var weaponKeyInfo = keyInfoFor(weaponNum);
+        dispatchKey('keydown', weaponKeyInfo);
+        setTimeout(function() {
+          dispatchKey('keyup', weaponKeyInfo);
+        }, 50);
+        if (weaponPanel) weaponPanel.classList.remove('open');
+      });
     });
 
     var opacityBtn = document.getElementById('opacityBtn');
