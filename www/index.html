@@ -74,6 +74,7 @@
     image-rendering: pixelated;
     image-rendering: crisp-edges;
     display: block !important;
+    z-index: 1 !important;
   }
 
   .post-processing {
@@ -83,6 +84,7 @@
     width: 100%;
     height: 100%;
     pointer-events: none;
+    z-index: 2;
   }
 
   .vignette {
@@ -104,7 +106,7 @@
     height: 100dvh;
     background: #0d0d0d;
     color: #f5f5f5;
-    z-index: 999;
+    z-index: 99999;
     flex-direction: column;
     align-items: center;
     justify-content: center;
@@ -112,28 +114,12 @@
     padding: 20px;
   }
 
-  #rotateOverlay i {
-    font-size: 54px;
-    margin-bottom: 20px;
-    color: #ff3333;
-    animation: rotatePulse 1.8s ease-in-out infinite;
-  }
-
-  @keyframes rotatePulse {
-    0%, 100% { transform: rotate(0deg); }
-    50% { transform: rotate(90deg); }
-  }
-
-  @media (orientation: portrait) {
-    #rotateOverlay { display: flex !important; }
-  }
-
   .top-bar {
     position: fixed;
     top: 10px;
     left: 10px;
     right: 10px;
-    z-index: 60;
+    z-index: 10000 !important;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -143,9 +129,10 @@
   }
 
   .top-btn {
-    pointer-events: auto;
-    background: rgba(0, 0, 0, 0.75);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    pointer-events: auto !important;
+    touch-action: manipulation !important;
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.4);
     color: #fff;
     border-radius: 6px;
     padding: 8px 12px;
@@ -157,28 +144,30 @@
     display: flex;
     align-items: center;
     gap: 6px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    z-index: 10001 !important;
   }
 
   .top-btn:active {
-    background: rgba(255, 50, 50, 0.8);
+    background: rgba(255, 50, 50, 0.9);
     border-color: #ff4444;
   }
 
   #cheatPanel, #weaponPanel, #keyboardPanel, #savePanel {
     position: fixed;
     top: 50px; 
-    z-index: 65;
-    pointer-events: auto;
-    background: rgba(15, 15, 15, 0.95);
-    border: 1px solid #444;
+    z-index: 10002 !important;
+    pointer-events: auto !important;
+    background: rgba(15, 15, 15, 0.98);
+    border: 1px solid #555;
     border-radius: 8px;
     padding: 12px;
     width: 250px;
     max-height: 70vh;
     overflow-y: auto;
     display: none;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.95);
+    touch-action: pan-y !important;
   }
 
   #cheatPanel { left: 10px; }
@@ -190,150 +179,15 @@
     display: block; 
   }
 
-  #cheatPanel h4, #weaponPanel h4, #keyboardPanel h4, #savePanel h4 {
-    margin: 0 0 10px 0;
-    color: #ff4444;
-    font-size: 13px;
-    border-bottom: 1px solid #333;
-    padding-bottom: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .panel-input-group {
-    display: flex;
-    gap: 6px;
-    margin-bottom: 10px;
-  }
-
-  .panel-input {
-    flex: 1;
-    background: #222;
-    border: 1px solid #555;
-    color: #fff;
-    padding: 8px;
-    border-radius: 5px;
-    font-size: 13px;
-    outline: none;
-  }
-
-  .panel-input:focus {
-    border-color: #ff4444;
-  }
-
-  .action-btn {
-    background: #333;
-    border: 1px solid #555;
-    color: #fff;
-    padding: 8px 10px;
-    border-radius: 5px;
-    font-size: 11px;
-    font-weight: bold;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-    width: 100%;
-    margin-bottom: 6px;
-  }
-
-  .action-btn:active {
-    background: #ff4444;
-    color: #000;
-  }
-
-  .action-btn.primary {
-    background: #b30000;
-    border-color: #ff3333;
-  }
-
-  .save-slot-item {
-    background: #222;
-    border: 1px solid #3a3a3a;
-    border-radius: 5px;
-    padding: 8px;
-    margin-bottom: 6px;
-    font-size: 11px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-
-  .save-slot-item .slot-name {
-    color: #ffcc00;
-    font-weight: bold;
-  }
-
-  .toast-msg {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(200, 0, 0, 0.9);
-    color: white;
-    padding: 10px 18px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: bold;
-    z-index: 100;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-  }
-
-  .toast-msg.show {
-    opacity: 1;
-  }
-
-  /* Input oculto para activar el teclado nativo de Android/iOS */
-  #nativeKeyTarget {
-    position: absolute;
-    top: -100px;
-    left: -100px;
-    opacity: 0;
-    width: 1px;
-    height: 1px;
-    pointer-events: auto;
-  }
-
-  .cheat-btn, .weapon-btn {
-    display: block; 
-    width: 100%; 
-    text-align: left;
-    background: #222; 
-    border: 1px solid #3d3d3d; 
-    color: #eee;
-    padding: 8px 10px; 
-    margin-bottom: 6px; 
-    border-radius: 5px; 
-    font-size: 11px;
-    cursor: pointer;
-  }
-
-  .cheat-btn:active, .weapon-btn:active { 
-    background: #ff4444; 
-    color: #000;
-  }
-
-  .cheat-btn small, .weapon-btn small {
-    display: block;
-    color: #888;
-    font-size: 9px;
-    margin-top: 2px;
-  }
-
   .touch-controls {
-    display: none;
+    display: block;
     position: fixed;
     top: 0; 
     left: 0;
     width: 100vw; 
     height: 100vh;
     height: 100dvh;
-    z-index: 50;
+    z-index: 9000 !important;
     pointer-events: none;
     padding-left: env(safe-area-inset-left);
     padding-right: env(safe-area-inset-right);
@@ -348,29 +202,32 @@
 
   .touch-btn {
     position: absolute;
-    pointer-events: auto;
-    background: rgba(0, 0, 0, 0.25);
-    border: 1.5px solid rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.85);
+    pointer-events: auto !important;
+    touch-action: none !important;
+    background: rgba(0, 0, 0, 0.35);
+    border: 1.5px solid rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.9);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 12px;
     font-weight: bold;
-    touch-action: none;
     backdrop-filter: blur(2px);
     -webkit-backdrop-filter: blur(2px);
     transition: background 0.1s ease, transform 0.05s ease, border-color 0.15s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+    z-index: 9001 !important;
+    -webkit-user-select: none;
+    user-select: none;
   }
 
   .touch-btn:active, .touch-btn.active { 
-    background: rgba(255, 40, 40, 0.85) !important; 
+    background: rgba(255, 40, 40, 0.9) !important; 
     border-color: #ff4444 !important;
     color: #ffffff !important;
     transform: scale(0.93);
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.8);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.9);
   }
 
   .touch-btn.small { 
@@ -383,7 +240,7 @@
     width: 75px; 
     height: 75px; 
     font-size: 16px; 
-    box-shadow: 0 0 15px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 0 15px rgba(255, 0, 0, 0.5);
   }
 
   .dpad { 
@@ -393,10 +250,11 @@
     width: 150px; 
     height: 150px; 
     pointer-events: none; 
+    z-index: 9001 !important;
   }
 
   .dpad .touch-btn { 
-    pointer-events: auto; 
+    pointer-events: auto !important; 
     border-radius: 10px; 
     width: 48px; 
     height: 48px; 
@@ -407,13 +265,33 @@
   #dpadLeft  { top: 51px; left: 0; }
   #dpadRight { top: 51px; right: 0; }
 
-  /* Posicionamiento de la botonera manteniendo las dimensiones exactas */
   #btnFire     { right: 15px; bottom: 15px; }
   #btnUse      { right: 100px; bottom: 15px; }
   #btnSpeed    { right: 15px; bottom: 100px; }
   #btnStrafeMod{ right: 100px; bottom: 100px; }
   #btnEnter    { right: 180px; bottom: 100px; }
   #btnEsc      { right: 255px; bottom: 100px; }
+
+  .toast-msg {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: rgba(0, 0, 0, 0.85);
+    border: 1px solid #ff4444;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    z-index: 100000;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+  .toast-msg.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
 </style>
 <script src="https://js-dos.com/6.22/current/js-dos.js"></script>
 </head>
@@ -424,10 +302,8 @@
     <div>Gira tu dispositivo a modo horizontal para jugar</div>
   </div>
 
-  <!-- Input oculto para forzar la apertura del teclado móvil nativo -->
-  <input type="text" id="nativeKeyTarget" autocomplete="off" autocapitalize="off" spellcheck="false" />
+  <input type="text" id="nativeKeyTarget" autocomplete="off" autocapitalize="off" spellcheck="false" style="position:absolute; opacity:0; pointer-events:none; left:-9999px;" />
 
-  <!-- Toast de Notificaciones -->
   <div id="toast" class="toast-msg">Notificación</div>
 
   <div class="top-bar">
@@ -462,62 +338,47 @@
     <button class="weapon-btn" data-weapon="7">7. BFG 9000<small>Tecla 7</small></button>
   </div>
 
-  <!-- Panel de Entrada de Teclado y Escritura de Progreso -->
   <div id="keyboardPanel">
     <h4>Teclado / Guardado de Nombre</h4>
     
-    <button id="btnOpenNativeKB" class="action-btn primary"><i class="fas fa-keyboard"></i> Abrir Teclado Táctil Nativo</button>
+    <button id="btnOpenNativeKB" class="top-btn" style="width:100%; margin-bottom:8px;"><i class="fas fa-keyboard"></i> Abrir Teclado Táctil Nativo</button>
     
     <div style="font-size: 11px; color: #aaa; margin: 8px 0 4px 0;">Escribe el nombre de la partida y envíalo a DOOM:</div>
-    <div class="panel-input-group">
-      <input type="text" id="saveNameInput" class="panel-input" placeholder="Ej: NIVEL 3 BASE" maxlength="16" inputmode="text" autocomplete="off" />
-      <button id="btnSendText" class="action-btn" style="width: auto;"><i class="fas fa-paper-plane"></i> Enviar</button>
+    <div style="display:flex; gap:4px; margin-bottom:8px;">
+      <input type="text" id="saveNameInput" style="flex:1; background:#222; border:1px solid #444; color:#fff; padding:6px; border-radius:4px;" placeholder="Ej: BASE 1" maxlength="16" autocomplete="off" />
+      <button id="btnSendText" class="top-btn" style="width: auto;"><i class="fas fa-paper-plane"></i> Enviar</button>
     </div>
 
-    <div style="font-size: 11px; color: #aaa; margin: 6px 0;">Asistente de Ranura (Save Slot):</div>
-    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px;">
-      <button class="action-btn btn-slot-save" data-slot="0"><i class="fas fa-save"></i> Guardar Ranura 1</button>
-      <button class="action-btn btn-slot-save" data-slot="1"><i class="fas fa-save"></i> Guardar Ranura 2</button>
-      <button class="action-btn btn-slot-save" data-slot="2"><i class="fas fa-save"></i> Guardar Ranura 3</button>
-      <button class="action-btn btn-slot-save" data-slot="3"><i class="fas fa-save"></i> Guardar Ranura 4</button>
-    </div>
-
-    <div style="font-size: 11px; color: #aaa; margin: 6px 0;">Atajos Menú Guardar DOOM:</div>
-    <button id="btnShortcutSaveMenu" class="action-btn"><i class="fas fa-bars"></i> Abrir Menú Guardar en Juego</button>
-    <div style="display: flex; gap: 4px;">
-      <button id="btnKeyEnter" class="action-btn" style="flex:1;"><i class="fas fa-level-down-alt"></i> Enter</button>
-      <button id="btnKeyBackspace" class="action-btn" style="flex:1;"><i class="fas fa-backspace"></i> Borrar</button>
-      <button id="btnKeyEsc" class="action-btn" style="flex:1;"><i class="fas fa-times"></i> Esc</button>
+    <div style="display: flex; gap: 4px; margin-top:8px;">
+      <button id="btnKeyEnter" class="top-btn" style="flex:1;"><i class="fas fa-level-down-alt"></i> Enter</button>
+      <button id="btnKeyBackspace" class="top-btn" style="flex:1;"><i class="fas fa-backspace"></i> Borrar</button>
+      <button id="btnKeyEsc" class="top-btn" style="flex:1;"><i class="fas fa-times"></i> Esc</button>
     </div>
   </div>
 
-  <!-- Panel de Estado de Partidas Guardadas -->
   <div id="savePanel">
     <h4>Partidas Guardadas</h4>
     <div id="saveSlotList" style="font-size: 11px; color: #bbb; margin-bottom: 10px;">
       Cargando almacenamiento local...
     </div>
-    <button id="btnManualSave" class="action-btn primary"><i class="fas fa-save"></i> Forzar Guardado Permanente Ahora</button>
-    <button id="btnRefreshSaves" class="action-btn"><i class="fas fa-sync-alt"></i> Comprobar / Actualizar Lista</button>
+    <button id="btnManualSave" class="top-btn" style="width:100%; margin-bottom:4px;"><i class="fas fa-save"></i> Guardar Permanente Ahora</button>
+    <button id="btnRefreshSaves" class="top-btn" style="width:100%; margin-bottom:8px;"><i class="fas fa-sync-alt"></i> Actualizar Lista</button>
     
-    <div style="border-top: 1px solid #333; margin-top: 8px; padding-top: 8px;">
-      <button id="btnExportSaves" class="action-btn" style="background:#224422;"><i class="fas fa-file-export"></i> Exportar Copia de Seguridad</button>
-      <button id="btnImportSaves" class="action-btn" style="background:#442222;"><i class="fas fa-file-import"></i> Importar Copia de Seguridad</button>
+    <div style="border-top: 1px solid #333; padding-top: 8px; display:flex; gap:4px;">
+      <button id="btnExportSaves" class="top-btn" style="flex:1; background:#224422;"><i class="fas fa-file-export"></i> Exportar</button>
+      <button id="btnImportSaves" class="top-btn" style="flex:1; background:#442222;"><i class="fas fa-file-import"></i> Importar</button>
     </div>
   </div>
 
   <div class="container">
     <div class="game-container" id="gameContainer">
-      <!-- Changed from <div> to <canvas> for JS-DOS 6.22 initialization -->
-      <canvas id="jsdos"></canvas>
+      <canvas id="jsdos" tabindex="0"></canvas>
       <div class="post-processing">
         <div class="vignette"></div>
       </div>
     </div>
   </div>
 
-  <!-- Controles Táctiles (Mismo tamaño de botones + Botón de cambio de Arma) -->
-  <!-- Controles Táctiles -->
   <div class="touch-controls">
     <div class="dpad">
       <div class="touch-btn" id="dpadUp"><i class="fas fa-arrow-up"></i></div>
@@ -546,546 +407,612 @@
       }, 2500);
     }
 
-    /* -------------------------------------------------------------
-       SISTEMA DE ALMACENAMIENTO PERMANENTE (INDEXEDDB + LOCALSTORAGE)
-    ------------------------------------------------------------- */
-    var DB_NAME = 'DoomMobileSavesDB';
-    var DB_VERSION = 1;
-    var STORE_NAME = 'saves';
-    var LS_BACKUP_KEY = 'DOOM_MOBILE_SAVES_LS_BACKUP';
+    // Disparar evento de ratón al lienzo para asegurar compatibilidad de disparo
+    function dispatchMouseFire(isDown) {
+      var canvas = document.getElementById('jsdos') || document.querySelector('canvas');
+      if (!canvas) return;
+      
+      var rect = canvas.getBoundingClientRect();
+      var clientX = rect.left + rect.width / 2;
+      var clientY = rect.top + rect.height / 2;
 
-    function openSavesDB() {
-      return new Promise(function(resolve, reject) {
-        var request = indexedDB.open(DB_NAME, DB_VERSION);
-        request.onupgradeneeded = function(e) {
-          var db = e.target.result;
-          if (!db.objectStoreNames.contains(STORE_NAME)) {
-            db.createObjectStore(STORE_NAME);
-          }
-        };
-        request.onsuccess = function() { resolve(request.result); };
-        request.onerror = function() { reject(request.error); };
-      });
-    }
+      var eventType = isDown ? 'mousedown' : 'mouseup';
+      var pointerType = isDown ? 'pointerdown' : 'pointerup';
 
-    function uint8ToBase64(bytes) {
-      var binary = '';
-      var len = bytes.byteLength;
-      for (var i = 0; i < len; i++) {
-        binary += String.fromCharCode(bytes[i]);
-      }
-      return window.btoa(binary);
-    }
-
-    function base64ToUint8(base64) {
-      var binary_string = window.atob(base64);
-      var len = binary_string.length;
-      var bytes = new Uint8Array(len);
-      for (var i = 0; i < len; i++) {
-        bytes[i] = binary_string.charCodeAt(i);
-      }
-      return bytes;
-    }
-
-    function saveFileToDB(filename, uint8Data) {
-      // Guardado primario en IndexedDB
-      var p1 = openSavesDB().then(function(db) {
-        return new Promise(function(resolve, reject) {
-          var tx = db.transaction(STORE_NAME, 'readwrite');
-          var store = tx.objectStore(STORE_NAME);
-          store.put({ data: uint8Data, timestamp: Date.now() }, filename.toLowerCase());
-          tx.oncomplete = function() { resolve(); };
-          tx.onerror = function() { reject(tx.error); };
-        });
+      var mouseEv = new MouseEvent(eventType, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 0,
+        buttons: isDown ? 1 : 0,
+        clientX: clientX,
+        clientY: clientY
       });
 
-      // Respaldo secundario en LocalStorage para APKs
-      try {
-        var lsData = JSON.parse(localStorage.getItem(LS_BACKUP_KEY) || '{}');
-        lsData[filename.toLowerCase()] = {
-          b64: uint8ToBase64(uint8Data),
-          timestamp: Date.now()
-        };
-        localStorage.setItem(LS_BACKUP_KEY, JSON.stringify(lsData));
-      } catch(e) {
-        console.warn('Fallback LocalStorage lleno o restringido:', e);
-      }
-
-      return p1;
-    }
-
-    function getAllSavesFromDB() {
-      return openSavesDB().then(function(db) {
-        return new Promise(function(resolve, reject) {
-          var tx = db.transaction(STORE_NAME, 'readonly');
-          var store = tx.objectStore(STORE_NAME);
-          var saves = {};
-          var req = store.openCursor();
-          req.onsuccess = function(e) {
-            var cursor = e.target.result;
-            if (cursor) {
-              saves[cursor.key.toLowerCase()] = cursor.value;
-              cursor.continue();
-            } else {
-              // Fusionar con respaldo de LocalStorage si IndexedDB estaba vacío
-              try {
-                var lsData = JSON.parse(localStorage.getItem(LS_BACKUP_KEY) || '{}');
-                Object.keys(lsData).forEach(function(f) {
-                  if (!saves[f]) {
-                    saves[f] = {
-                      data: base64ToUint8(lsData[f].b64),
-                      timestamp: lsData[f].timestamp
-                    };
-                  }
-                });
-              } catch(err) {}
-              resolve(saves);
-            }
-          };
-          req.onerror = function() { reject(req.error); };
-        });
-      });
-    }
-
-    function getEmscriptenFS() {
-      if (window.wDosBox && window.wDosBox.FS) return window.wDosBox.FS;
-      if (window.Module && window.Module.FS) return window.Module.FS;
-      return null;
-    }
-
-    function persistDoomSaves() {
-      var FS = getEmscriptenFS();
-      if (!FS) return Promise.resolve(0);
-
-      var searchDirs = ['/DOOM', '/doom', '/'];
-      var files = [];
-      var foundDir = '/DOOM';
-
-      for (var i = 0; i < searchDirs.length; i++) {
-        try {
-          var list = FS.readdir(searchDirs[i]);
-          if (list && list.length > 0) {
-            files = list;
-            foundDir = searchDirs[i];
-            break;
-          }
-        } catch(e) {}
-      }
-
-      var savePromises = [];
-      var savedCount = 0;
-
-      files.forEach(function(file) {
-        var lower = file.toLowerCase();
-        if (lower.endsWith('.dsg') || lower === 'default.cfg') {
-          var path = (foundDir === '/' ? '' : foundDir) + '/' + file;
-          try {
-            var data = FS.readFile(path);
-            if (data && data.length > 0) {
-              savedCount++;
-              savePromises.push(saveFileToDB(file, data));
-            }
-          } catch(err) {
-            console.warn('Error leyendo archivo en FS:', file, err);
-          }
-        }
+      var pointerEv = new PointerEvent(pointerType, {
+        bubbles: true,
+        cancelable: true,
+        view: window,
+        button: 0,
+        buttons: isDown ? 1 : 0,
+        clientX: clientX,
+        clientY: clientY,
+        pointerId: 1,
+        pointerType: 'mouse',
+        isPrimary: true
       });
 
-      return Promise.all(savePromises).then(function() {
-        return savedCount;
-      });
+      try { canvas.dispatchEvent(mouseEv); } catch(e) {}
+      try { canvas.dispatchEvent(pointerEv); } catch(e) {}
     }
-
-    function restoreDoomSaves(dosFs) {
-      return getAllSavesFromDB().then(function(saves) {
-        var keys = Object.keys(saves);
-        if (keys.length === 0) return 0;
-
-        var FS = getEmscriptenFS();
-        var restoredCount = 0;
-
-        keys.forEach(function(file) {
-          var saveObj = saves[file];
-          var uint8Data = saveObj.data;
-          var paths = ['DOOM/' + file, 'doom/' + file, file];
-
-          paths.forEach(function(relativePath) {
-            if (dosFs && dosFs.createFile) {
-              try { dosFs.createFile(relativePath, uint8Data); } catch(e){}
-            } else if (FS) {
-              try { FS.writeFile('/' + relativePath, uint8Data); } catch(e){}
-            }
-          });
-          restoredCount++;
-        });
-
-        return restoredCount;
-      });
-    }
-
-    function updateSaveStatusUI() {
-      var saveSlotList = document.getElementById('saveSlotList');
-      if (!saveSlotList) return;
-
-      getAllSavesFromDB().then(function(saves) {
-        var keys = Object.keys(saves);
-        if (keys.length === 0) {
-          saveSlotList.innerHTML = '<p style="margin:0;">No hay partidas guardadas aún.<br>Usa <b>Save Game</b> en el menú de DOOM o el asistente táctil.</p>';
-          return;
-        }
-
-        var html = '';
-        keys.forEach(function(file) {
-          if (file.toLowerCase().endsWith('.dsg')) {
-            var slotNum = file.replace(/[^0-9]/g, '');
-            var num = parseInt(slotNum, 10);
-            var slotLabel = isNaN(num) ? file : 'Ranura ' + (num + 1);
-            var dateStr = new Date(saves[file].timestamp).toLocaleTimeString();
-            html += '<div class="save-slot-item">' +
-                      '<div><span class="slot-name">' + slotLabel + '</span> (' + file + ')</div>' +
-                      '<div style="color:#888;">' + dateStr + '</div>' +
-                    '</div>';
-          }
-        });
-
-        saveSlotList.innerHTML = html || '<p style="margin:0;">Archivos de configuración detectados.</p>';
-      }).catch(function() {
-        saveSlotList.innerText = 'Error al leer almacenamiento local.';
-      });
-    }
-
-    function forceCanvasResize() {
-      var canvases = document.querySelectorAll('#jsdos canvas, .game-container canvas, canvas#jsdos');
-      canvases.forEach(function(canvas) {
-        canvas.style.setProperty('width', '100vw', 'important');
-        canvas.style.setProperty('height', '100vh', 'important');
-        canvas.style.setProperty('object-fit', 'fill', 'important');
-        canvas.style.setProperty('top', '50%', 'important');
-        canvas.style.setProperty('left', '50%', 'important');
-        canvas.style.setProperty('transform', 'translate(-50%, -50%)', 'important');
-        canvas.style.setProperty('margin', '0', 'important');
-      });
-    }
-
-    function fitGame() {
-      gameContainer.style.width = '100vw';
-      gameContainer.style.height = '100dvh';
-      forceCanvasResize();
-    }
-
-    fitGame();
-    window.addEventListener('resize', fitGame);
-    window.addEventListener('orientationchange', function() { 
-      setTimeout(fitGame, 150); 
-    });
-    if (window.visualViewport) {
-      window.visualViewport.addEventListener('resize', fitGame);
-    }
-
-    document.body.classList.add('is-touch');
 
     function keyInfoFor(ch) {
-      if (ch === 'Tab')        return {code:'Tab', keyCode:9, key:'Tab'};
-      if (ch === 'ArrowUp')    return {code:'ArrowUp', keyCode:38, key:'ArrowUp'};
-      if (ch === 'ArrowDown')  return {code:'ArrowDown', keyCode:40, key:'ArrowDown'};
-      if (ch === 'ArrowLeft')  return {code:'ArrowLeft', keyCode:37, key:'ArrowLeft'};
-      if (ch === 'ArrowRight') return {code:'ArrowRight', keyCode:39, key:'ArrowRight'};
-      if (ch === 'Space' || ch === ' ') return {code:'Space', keyCode:32, key:' '};
-      if (ch === 'Alt')        return {code:'AltLeft', keyCode:18, key:'Alt'};
-      if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter'};
-      if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape'};
-      if (ch === 'Backspace')  return {code:'Backspace', keyCode:8, key:'Backspace'};
-      if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch};
+      if (ch === 'Tab')        return {code:'Tab', keyCode:9, key:'Tab', location:0};
+      if (ch === 'ArrowUp')    return {code:'ArrowUp', keyCode:38, key:'ArrowUp', location:0};
+      if (ch === 'ArrowDown')  return {code:'ArrowDown', keyCode:40, key:'ArrowDown', location:0};
+      if (ch === 'ArrowLeft')  return {code:'ArrowLeft', keyCode:37, key:'ArrowLeft', location:0};
+      if (ch === 'ArrowRight') return {code:'ArrowRight', keyCode:39, key:'ArrowRight', location:0};
+      if (ch === 'Space' || ch === ' ') return {code:'Space', keyCode:32, key:' ', location:0};
+      if (ch === 'Alt')        return {code:'AltLeft', keyCode:18, key:'Alt', location:1, altKey:true};
+      if (ch === 'Ctrl' || ch === 'Control') return {code:'ControlLeft', keyCode:17, key:'Control', location:1, ctrlKey:true};
+      if (ch === 'Shift')      return {code:'ShiftLeft', keyCode:16, key:'Shift', location:1, shiftKey:true};
+      if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter', location:0};
+      if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape', location:0};
+      if (ch === 'Backspace')  return {code:'Backspace', keyCode:8, key:'Backspace', location:0};
+      if (ch === 's' || ch === 'S') return {code:'KeyS', keyCode:83, key:'s', location:0};
+      if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch, location:0};
       return {
         code: 'Key' + ch.toUpperCase(), 
         keyCode: ch.toUpperCase().charCodeAt(0), 
-        key: ch.toLowerCase()
+        key: ch.toLowerCase(),
+        location: 0
       };
     }
 
     function dispatchKey(type, info) {
-      var ev = new KeyboardEvent(type, {
+      if (!info) return;
+
+      var isDown = (type === 'keydown');
+      var canvas = document.getElementById('jsdos') || document.querySelector('canvas');
+
+      if (canvas) {
+        try { 
+          canvas.focus(); 
+          if (document.activeElement !== canvas) {
+            canvas.setAttribute('tabindex', '0');
+            canvas.focus();
+          }
+        } catch(e){}
+      }
+
+      var keyEventInit = {
         key: info.key, 
         code: info.code, 
         keyCode: info.keyCode, 
         which: info.keyCode,
+        charCode: type === 'keypress' ? info.keyCode : 0,
+        location: info.location || 0,
+        ctrlKey: info.key === 'Control' ? isDown : !!info.ctrlKey,
+        shiftKey: info.key === 'Shift' ? isDown : !!info.shiftKey,
+        altKey: info.key === 'Alt' ? isDown : !!info.altKey,
         bubbles: true, 
-        cancelable: true
-      });
-      var canvas = document.getElementById('jsdos');
-      if (canvas) canvas.dispatchEvent(ev);
-      document.dispatchEvent(ev);
+        cancelable: true,
+        composed: true,
+        view: window
+      };
+
+      var ev;
+      try {
+        ev = new KeyboardEvent(type, keyEventInit);
+      } catch(e) {
+        ev = document.createEvent('KeyboardEvent');
+        ev.initKeyboardEvent(type, true, true, window, info.key, info.location || 0, '', false, '');
+      }
+
+      try {
+        Object.defineProperty(ev, 'keyCode', { get: function() { return info.keyCode; }, configurable: true });
+        Object.defineProperty(ev, 'which', { get: function() { return info.keyCode; }, configurable: true });
+        Object.defineProperty(ev, 'charCode', { get: function() { return type === 'keypress' ? info.keyCode : 0; }, configurable: true });
+        Object.defineProperty(ev, 'code', { get: function() { return info.code; }, configurable: true });
+        Object.defineProperty(ev, 'key', { get: function() { return info.key; }, configurable: true });
+      } catch(e) {}
+
       window.dispatchEvent(ev);
-    }
+      document.dispatchEvent(ev);
+      if (canvas) canvas.dispatchEvent(ev);
 
-    /* -------------------------------------------------------------
-       TECLADO NATIVO Y ASISTENTE DE ESCRITURA PARA GUARDADO
-    ------------------------------------------------------------- */
-    var nativeKeyTarget = document.getElementById('nativeKeyTarget');
-    var btnOpenNativeKB = document.getElementById('btnOpenNativeKB');
+      // Scancodes de DOS para compatibilidad total con JS-DOS v6 / wDosBox
+      var dosScancodes = {
+        17: 29, // Ctrl -> Scancode 29
+        18: 56, // Alt -> Scancode 56
+        16: 42, // Shift -> Scancode 42
+        32: 57, // Space -> Scancode 57
+        13: 28, // Enter -> Scancode 28
+        27: 1,  // Esc -> Scancode 1
+        38: 72, // Up -> Scancode 72
+        40: 80, // Down -> Scancode 80
+        37: 75, // Left -> Scancode 75
+        39: 77, // Right -> Scancode 77
+        83: 31  // 'S' -> Scancode 31
+      };
 
-    if (btnOpenNativeKB && nativeKeyTarget) {
-      btnOpenNativeKB.addEventListener('click', function(e) {
-        e.preventDefault();
-        nativeKeyTarget.focus();
-        nativeKeyTarget.click();
-        showToast('Teclado nativo activado para escribir');
-      });
-    }
+      var scancode = dosScancodes[info.keyCode] || info.keyCode;
 
-    if (nativeKeyTarget) {
-      nativeKeyTarget.addEventListener('input', function(e) {
-        var val = nativeKeyTarget.value;
-        if (val.length > 0) {
-          var char = val.charAt(val.length - 1);
-          var info = keyInfoFor(char);
-          dispatchKey('keydown', info);
-          setTimeout(function() { dispatchKey('keyup', info); }, 40);
-          nativeKeyTarget.value = '';
+      if (window.ci && typeof window.ci.sendKeyEvent === 'function') {
+        try { window.ci.sendKeyEvent(scancode, isDown); } catch(e){}
+        // Si la tecla es Ctrl (17) o 'S' (83), enviar ambos scancodes para garantizar el disparo
+        if (info.keyCode === 17 || info.keyCode === 83) {
+          try { window.ci.sendKeyEvent(29, isDown); } catch(e){}
+          try { window.ci.sendKeyEvent(31, isDown); } catch(e){}
         }
-      });
-
-      nativeKeyTarget.addEventListener('keydown', function(e) {
-        if (e.key === 'Backspace') {
-          var bsInfo = keyInfoFor('Backspace');
-          dispatchKey('keydown', bsInfo);
-          setTimeout(function() { dispatchKey('keyup', bsInfo); }, 40);
-        } else if (e.key === 'Enter') {
-          var entInfo = keyInfoFor('Enter');
-          dispatchKey('keydown', entInfo);
-          setTimeout(function() { dispatchKey('keyup', entInfo); }, 40);
-        }
-      });
-    }
-
-    function sendStringToDoom(str, sendEnterAfter) {
-      if (!str) return;
-      var cleanStr = str.trim();
-      var delay = 0;
-
-      for (var i = 0; i < cleanStr.length; i++) {
-        (function(ch, d) {
-          setTimeout(function() {
-            var info = keyInfoFor(ch);
-            dispatchKey('keydown', info);
-            setTimeout(function() { dispatchKey('keyup', info); }, 40);
-          }, d);
-        })(cleanStr.charAt(i), delay);
-        delay += 90;
       }
-
-      if (sendEnterAfter) {
-        setTimeout(function() {
-          var enterInfo = keyInfoFor('Enter');
-          dispatchKey('keydown', enterInfo);
-          setTimeout(function() { dispatchKey('keyup', enterInfo); }, 40);
-        }, delay + 100);
+      if (window.wDosBox && typeof window.wDosBox.sendKeyEvent === 'function') {
+        try { window.wDosBox.sendKeyEvent(scancode, isDown); } catch(e){}
       }
     }
 
-    // Botones de Guardado Rápido en Ranura Asistida
-    document.querySelectorAll('.btn-slot-save').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var slotIndex = parseInt(btn.getAttribute('data-slot'), 10) || 0;
-        var nameInput = document.getElementById('saveNameInput');
-        var slotName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : ('SLOT ' + (slotIndex + 1));
+    function bindClickOrTap(elementOrId, handler) {
+      var el = typeof elementOrId === 'string' ? document.getElementById(elementOrId) : elementOrId;
+      if (!el) return;
+      
+      var handled = false;
+      function trigger(e) {
+        if (e) {
+          if (e.cancelable) e.preventDefault();
+          e.stopPropagation();
+        }
+        if (handled) return;
+        handled = true;
+        setTimeout(function() { handled = false; }, 300);
+        handler(e);
+      }
 
-        showToast('Guardando en Ranura ' + (slotIndex + 1) + '...');
+      el.addEventListener('touchstart', trigger, { passive: false });
+      el.addEventListener('click', function(e) {
+        if (!handled) handler(e);
+      });
+    }
 
-        // Secuencia automatizada: Esc -> Menú Guardar -> Seleccionar Ranura -> Nombre -> Enter
-        dispatchKey('keydown', keyInfoFor('Escape'));
-        setTimeout(function() { dispatchKey('keyup', keyInfoFor('Escape')); }, 50);
+    var registeredButtons = [];
 
-        setTimeout(function() {
-          dispatchKey('keydown', keyInfoFor('ArrowDown'));
-          setTimeout(function() { dispatchKey('keyup', keyInfoFor('ArrowDown')); }, 50);
-        }, 200);
+    function bindButtonKey(elementId, keys) {
+      var btn = typeof elementId === 'string' ? document.getElementById(elementId) : elementId;
+      if (!btn) return;
+      
+      var isPressed = false;
+      var keyList = Array.isArray(keys) ? keys : [keys];
 
-        setTimeout(function() {
-          dispatchKey('keydown', keyInfoFor('Enter'));
-          setTimeout(function() { dispatchKey('keyup', keyInfoFor('Enter')); }, 50);
-        }, 350);
+      function press(e) {
+        if (e) {
+          if (e.cancelable) e.preventDefault();
+          e.stopPropagation();
+        }
+        if (isPressed) return;
+        isPressed = true;
+        btn.classList.add('active');
+        keyList.forEach(function(k) {
+          dispatchKey('keydown', keyInfoFor(k));
+        });
+        // Si el botón es disparo, activar click de ratón también
+        if (keyList.indexOf('Ctrl') !== -1 || keyList.indexOf('s') !== -1 || keyList.indexOf('S') !== -1) {
+          dispatchMouseFire(true);
+        }
+      }
 
-        // Mover a la ranura especificada
-        setTimeout(function() {
-          for (var i = 0; i < slotIndex; i++) {
-            (function(idx) {
-              setTimeout(function() {
-                dispatchKey('keydown', keyInfoFor('ArrowDown'));
-                setTimeout(function() { dispatchKey('keyup', keyInfoFor('ArrowDown')); }, 40);
-              }, idx * 80);
-            })(i);
+      function release(e) {
+        if (e) {
+          if (e.cancelable) e.preventDefault();
+          e.stopPropagation();
+        }
+        if (!isPressed) return;
+        isPressed = false;
+        btn.classList.remove('active');
+        keyList.forEach(function(k) {
+          dispatchKey('keyup', keyInfoFor(k));
+        });
+        // Desactivar click de ratón de disparo
+        if (keyList.indexOf('Ctrl') !== -1 || keyList.indexOf('s') !== -1 || keyList.indexOf('S') !== -1) {
+          dispatchMouseFire(false);
+        }
+      }
+
+      btn._press = press;
+      btn._release = release;
+      btn._isPressed = function() { return isPressed; };
+      registeredButtons.push(btn);
+
+      // Eventos táctiles directos con preventDefault para evitar bloqueo/emulación previa
+      btn.addEventListener('touchstart', press, { passive: false });
+      btn.addEventListener('touchend', release, { passive: false });
+      btn.addEventListener('touchcancel', release, { passive: false });
+
+      // Eventos de ratón para pruebas en escritorio/PC
+      btn.addEventListener('mousedown', press);
+      btn.addEventListener('mouseup', release);
+      btn.addEventListener('mouseleave', release);
+    }
+
+    function releaseAllButtons() {
+      registeredButtons.forEach(function(btn) {
+        if (btn && btn._release) {
+          btn._release();
+        }
+      });
+    }
+
+    // Liberación global continua para evitar que ningún botón se quede pegado o atascado
+    window.addEventListener('pointerup', releaseAllButtons, { passive: true });
+    window.addEventListener('touchend', function(e) {
+      if (!e.touches || e.touches.length === 0) {
+        releaseAllButtons();
+      }
+    }, { passive: true });
+    window.addEventListener('touchcancel', releaseAllButtons, { passive: true });
+    window.addEventListener('pointercancel', releaseAllButtons, { passive: true });
+    window.addEventListener('mouseup', releaseAllButtons, { passive: true });
+    window.addEventListener('blur', releaseAllButtons);
+    window.addEventListener('contextmenu', releaseAllButtons);
+
+    // Asignación de controles direccionales y de acción
+    bindButtonKey('dpadUp', 'ArrowUp');
+    bindButtonKey('dpadDown', 'ArrowDown');
+    bindButtonKey('dpadLeft', 'ArrowLeft');
+    bindButtonKey('dpadRight', 'ArrowRight');
+    
+    // Asignación del Botón de Disparo: combina Tecla S, Control y Clic de Ratón
+    bindButtonKey('btnFire', ['s', 'Ctrl']);
+    
+    bindButtonKey('btnUse', 'Space');
+    bindButtonKey('btnSpeed', 'Shift');
+    bindButtonKey('btnStrafeMod', 'Alt');
+    bindButtonKey('btnEnter', 'Enter');
+    bindButtonKey('btnEsc', 'Escape');
+
+    // Deslizamiento multitáctil suave para el D-Pad
+    var dpadContainer = document.querySelector('.dpad');
+    var dpadBtns = {
+      dpadUp: document.getElementById('dpadUp'),
+      dpadDown: document.getElementById('dpadDown'),
+      dpadLeft: document.getElementById('dpadLeft'),
+      dpadRight: document.getElementById('dpadRight')
+    };
+
+    if (dpadContainer) {
+      function handleDpadMove(e) {
+        if (e.cancelable) e.preventDefault();
+        var touches = e.touches || (e.clientX ? [e] : []);
+        var touchedIds = {};
+
+        for (var i = 0; i < touches.length; i++) {
+          var touch = touches[i];
+          var target = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (target) {
+            var btnEl = target.closest('.touch-btn');
+            if (btnEl && btnEl.id && dpadBtns[btnEl.id]) {
+              touchedIds[btnEl.id] = true;
+            }
           }
-        }, 500);
+        }
 
-        // Confirmar selección y escribir nombre
-        var writeDelay = 600 + (slotIndex * 80);
-        setTimeout(function() {
-          dispatchKey('keydown', keyInfoFor('Enter'));
-          setTimeout(function() { dispatchKey('keyup', keyInfoFor('Enter')); }, 50);
-        }, writeDelay);
+        Object.keys(dpadBtns).forEach(function(id) {
+          var btn = dpadBtns[id];
+          if (btn && btn._press && btn._release) {
+            if (touchedIds[id]) {
+              btn._press();
+            } else {
+              btn._release();
+            }
+          }
+        });
+      }
 
-        setTimeout(function() {
-          sendStringToDoom(slotName, true);
-        }, writeDelay + 200);
-
-        // Forzar sincronización con el disco duro virtual
-        setTimeout(function() {
-          persistDoomSaves().then(function(count) {
-            showToast('¡Ranura ' + (slotIndex + 1) + ' guardada con éxito!');
-            updateSaveStatusUI();
+      dpadContainer.addEventListener('touchmove', handleDpadMove, { passive: false });
+      dpadContainer.addEventListener('touchend', function(e) {
+        if (!e.touches || e.touches.length === 0) {
+          Object.keys(dpadBtns).forEach(function(id) {
+            if (dpadBtns[id] && dpadBtns[id]._release) dpadBtns[id]._release();
           });
-        }, writeDelay + 1800);
+        }
+      }, { passive: false });
+    }
 
-        closeAllPanels();
+    function keyInfoFor(ch) {
+      if (ch === 'Tab')        return {code:'Tab', keyCode:9, key:'Tab', location:0};
+      if (ch === 'ArrowUp')    return {code:'ArrowUp', keyCode:38, key:'ArrowUp', location:0};
+      if (ch === 'ArrowDown')  return {code:'ArrowDown', keyCode:40, key:'ArrowDown', location:0};
+      if (ch === 'ArrowLeft')  return {code:'ArrowLeft', keyCode:37, key:'ArrowLeft', location:0};
+      if (ch === 'ArrowRight') return {code:'ArrowRight', keyCode:39, key:'ArrowRight', location:0};
+      if (ch === 'Space' || ch === ' ') return {code:'Space', keyCode:32, key:' ', location:0};
+      if (ch === 'Alt')        return {code:'AltLeft', keyCode:18, key:'Alt', location:1, altKey:true};
+      if (ch === 'Ctrl' || ch === 'Control') return {code:'ControlLeft', keyCode:17, key:'Control', location:1, ctrlKey:true};
+      if (ch === 'Shift')      return {code:'ShiftLeft', keyCode:16, key:'Shift', location:1, shiftKey:true};
+      if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter', location:0};
+      if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape', location:0};
+      if (ch === 'Backspace')  return {code:'Backspace', keyCode:8, key:'Backspace', location:0};
+      if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch, location:0};
+      return {
+        code: 'Key' + ch.toUpperCase(), 
+        keyCode: ch.toUpperCase().charCodeAt(0), 
+        key: ch.toLowerCase(),
+        location: 0
+      };
+    }
+
+    function dispatchKey(type, info) {
+      if (!info) return;
+
+      var isDown = (type === 'keydown');
+      var canvas = document.getElementById('jsdos') || document.querySelector('canvas');
+
+      if (canvas) {
+        try { 
+          canvas.focus(); 
+          if (document.activeElement !== canvas) {
+            canvas.setAttribute('tabindex', '0');
+            canvas.focus();
+          }
+        } catch(e){}
+      }
+
+      var keyEventInit = {
+        key: info.key, 
+        code: info.code, 
+        keyCode: info.keyCode, 
+        which: info.keyCode,
+        charCode: type === 'keypress' ? info.keyCode : 0,
+        location: info.location || 0,
+        ctrlKey: info.key === 'Control' ? isDown : !!info.ctrlKey,
+        shiftKey: info.key === 'Shift' ? isDown : !!info.shiftKey,
+        altKey: info.key === 'Alt' ? isDown : !!info.altKey,
+        bubbles: true, 
+        cancelable: true,
+        composed: true,
+        view: window
+      };
+
+      var ev;
+      try {
+        ev = new KeyboardEvent(type, keyEventInit);
+      } catch(e) {
+        ev = document.createEvent('KeyboardEvent');
+        ev.initKeyboardEvent(type, true, true, window, info.key, info.location || 0, '', false, '');
+      }
+
+      try {
+        Object.defineProperty(ev, 'keyCode', { get: function() { return info.keyCode; }, configurable: true });
+        Object.defineProperty(ev, 'which', { get: function() { return info.keyCode; }, configurable: true });
+        Object.defineProperty(ev, 'charCode', { get: function() { return type === 'keypress' ? info.keyCode : 0; }, configurable: true });
+        Object.defineProperty(ev, 'code', { get: function() { return info.code; }, configurable: true });
+        Object.defineProperty(ev, 'key', { get: function() { return info.key; }, configurable: true });
+      } catch(e) {}
+
+      window.dispatchEvent(ev);
+      document.dispatchEvent(ev);
+      if (canvas) canvas.dispatchEvent(ev);
+
+      // Si es disparo (Ctrl=17 o 's'=83), activar disparo de ratón y enviar ambos códigos
+      if (info.keyCode === 17 || info.keyCode === 83) {
+        dispatchMouseFire(isDown);
+        if (window.ci && typeof window.ci.sendKeyEvent === 'function') {
+          try { window.ci.sendKeyEvent(29, isDown); } catch(e){} // DOS Scancode Left Control
+          try { window.ci.sendKeyEvent(31, isDown); } catch(e){} // DOS Scancode 'S'
+        }
+      }
+
+      if (window.ci && typeof window.ci.sendKeyEvent === 'function') {
+        try { window.ci.sendKeyEvent(info.keyCode, isDown); } catch(e){}
+      }
+      if (window.wDosBox && typeof window.wDosBox.sendKeyEvent === 'function') {
+        try { window.wDosBox.sendKeyEvent(info.keyCode, isDown); } catch(e){}
+      }
+    }
+
+    function bindClickOrTap(elementOrId, handler) {
+      var el = typeof elementOrId === 'string' ? document.getElementById(elementOrId) : elementOrId;
+      if (!el) return;
+      
+      var handled = false;
+      function trigger(e) {
+        if (e) {
+          if (e.cancelable) e.preventDefault();
+          e.stopPropagation();
+        }
+        if (handled) return;
+        handled = true;
+        setTimeout(function() { handled = false; }, 300);
+        handler(e);
+      }
+
+      el.addEventListener('pointerdown', trigger, { passive: false });
+      el.addEventListener('touchstart', trigger, { passive: false });
+      el.addEventListener('click', function(e) {
+        if (!handled) handler(e);
       });
+    }
+
+    var registeredButtons = [];
+
+    function bindButtonKey(elementId, keys) {
+      var btn = typeof elementId === 'string' ? document.getElementById(elementId) : elementId;
+      if (!btn) return;
+      
+      var isPressed = false;
+      var keyList = Array.isArray(keys) ? keys : [keys];
+
+      function press(e) {
+        if (e) {
+          if (e.cancelable) e.preventDefault();
+          e.stopPropagation();
+        }
+        if (isPressed) return;
+        isPressed = true;
+        btn.classList.add('active');
+        keyList.forEach(function(k) {
+          dispatchKey('keydown', keyInfoFor(k));
+        });
+      }
+
+      function release(e) {
+        if (e) {
+          if (e.cancelable) e.preventDefault();
+          e.stopPropagation();
+        }
+        if (!isPressed) return;
+        isPressed = false;
+        btn.classList.remove('active');
+        keyList.forEach(function(k) {
+          dispatchKey('keyup', keyInfoFor(k));
+        });
+      }
+
+      btn._press = press;
+      btn._release = release;
+      registeredButtons.push(btn);
+
+      if (window.PointerEvent) {
+        btn.addEventListener('pointerdown', press, { passive: false });
+        btn.addEventListener('pointerup', release, { passive: false });
+        btn.addEventListener('pointercancel', release, { passive: false });
+        btn.addEventListener('pointerleave', release, { passive: false });
+      } else {
+        btn.addEventListener('touchstart', press, { passive: false });
+        btn.addEventListener('touchend', release, { passive: false });
+        btn.addEventListener('touchcancel', release, { passive: false });
+        btn.addEventListener('mousedown', press);
+        btn.addEventListener('mouseup', release);
+        btn.addEventListener('mouseleave', release);
+      }
+    }
+
+    function releaseAllButtons() {
+      registeredButtons.forEach(function(btn) {
+        if (btn && btn._release) {
+          btn._release();
+        }
+      });
+    }
+
+    // Liberación global para evitar que los botones queden "presionados/pegados"
+    window.addEventListener('pointerup', releaseAllButtons, { passive: true });
+    window.addEventListener('touchend', releaseAllButtons, { passive: true });
+    window.addEventListener('touchcancel', releaseAllButtons, { passive: true });
+    window.addEventListener('pointercancel', releaseAllButtons, { passive: true });
+    window.addEventListener('blur', releaseAllButtons);
+
+    // Asignación de controles direccionales y de acción
+    bindButtonKey('dpadUp', 'ArrowUp');
+    bindButtonKey('dpadDown', 'ArrowDown');
+    bindButtonKey('dpadLeft', 'ArrowLeft');
+    bindButtonKey('dpadRight', 'ArrowRight');
+    
+    // Asignación de Disparo: envía Ctrl y la tecla S para compatibilidad total
+    bindButtonKey('btnFire', ['Ctrl', 's']);
+    
+    bindButtonKey('btnUse', 'Space');
+    bindButtonKey('btnSpeed', 'Shift');
+    bindButtonKey('btnStrafeMod', 'Alt');
+    bindButtonKey('btnEnter', 'Enter');
+    bindButtonKey('btnEsc', 'Escape');
+
+    // Deslizamiento multitáctil suave para el D-Pad
+    var dpadContainer = document.querySelector('.dpad');
+    var dpadBtns = {
+      dpadUp: document.getElementById('dpadUp'),
+      dpadDown: document.getElementById('dpadDown'),
+      dpadLeft: document.getElementById('dpadLeft'),
+      dpadRight: document.getElementById('dpadRight')
+    };
+
+    if (dpadContainer) {
+      function handleDpadMove(e) {
+        if (e.cancelable) e.preventDefault();
+        var touches = e.touches || (e.clientX ? [e] : []);
+        var touchedIds = {};
+
+        for (var i = 0; i < touches.length; i++) {
+          var touch = touches[i];
+          var target = document.elementFromPoint(touch.clientX, touch.clientY);
+          if (target) {
+            var btnEl = target.closest('.touch-btn');
+            if (btnEl && btnEl.id && dpadBtns[btnEl.id]) {
+              touchedIds[btnEl.id] = true;
+            }
+          }
+        }
+
+        Object.keys(dpadBtns).forEach(function(id) {
+          var btn = dpadBtns[id];
+          if (btn && btn._press && btn._release) {
+            if (touchedIds[id]) {
+              btn._press();
+            } else {
+              btn._release();
+            }
+          }
+        });
+      }
+
+      dpadContainer.addEventListener('touchmove', handleDpadMove, { passive: false });
+      dpadContainer.addEventListener('pointermove', handleDpadMove, { passive: false });
+    }
+
+    function closeAllPanels() {
+      var panels = ['cheatPanel', 'weaponPanel', 'keyboardPanel', 'savePanel'];
+      panels.forEach(function(id) {
+        var p = document.getElementById(id);
+        if (p) p.classList.remove('open');
+      });
+    }
+
+    function setupPanelToggle(btnId, panelId) {
+      var panel = document.getElementById(panelId);
+      bindClickOrTap(btnId, function() {
+        if (!panel) return;
+        var isOpen = panel.classList.contains('open');
+        closeAllPanels();
+        if (!isOpen) panel.classList.add('open');
+      });
+    }
+
+    setupPanelToggle('cheatToggle', 'cheatPanel');
+    setupPanelToggle('weaponToggle', 'weaponPanel');
+    setupPanelToggle('keyboardToggle', 'keyboardPanel');
+    setupPanelToggle('saveToggle', 'savePanel');
+
+    document.addEventListener('pointerdown', function(e) {
+      if (!e.target.closest('#cheatPanel, #weaponPanel, #keyboardPanel, #savePanel, .top-btn')) {
+        closeAllPanels();
+      }
     });
 
-    var btnExportSaves = document.getElementById('btnExportSaves');
-    if (btnExportSaves) {
-      btnExportSaves.addEventListener('click', function() {
-        getAllSavesFromDB().then(function(saves) {
-          var exportObj = {};
-          Object.keys(saves).forEach(function(key) {
-            exportObj[key] = {
-              b64: uint8ToBase64(saves[key].data),
-              timestamp: saves[key].timestamp
-            };
-          });
-          var jsonStr = JSON.stringify(exportObj);
-          var blob = new Blob([jsonStr], {type: 'application/json'});
-          var url = URL.createObjectURL(blob);
-          var a = document.createElement('a');
-          a.href = url;
-          a.download = 'DOOM_SAVES_BACKUP.json';
-          a.click();
-          showToast('Copia de seguridad exportada');
-        });
-      });
-    }
-
-    var btnImportSaves = document.getElementById('btnImportSaves');
-    if (btnImportSaves) {
-      btnImportSaves.addEventListener('click', function() {
-        var input = document.createElement('input');
-        input.type = 'file';
-        input.accept = '.json';
-        input.onchange = function(e) {
-          var file = e.target.files[0];
-          if (!file) return;
-          var reader = new FileReader();
-          reader.onload = function(evt) {
-            try {
-              var imported = JSON.parse(evt.target.result);
-              var promises = [];
-              Object.keys(imported).forEach(function(k) {
-                var bytes = base64ToUint8(imported[k].b64);
-                promises.push(saveFileToDB(k, bytes));
-              });
-              Promise.all(promises).then(function() {
-                showToast('Partidas importadas correctamente. Reinicia para cargar.');
-                updateSaveStatusUI();
-              });
-            } catch(err) {
-              showToast('Error al importar el archivo');
-            }
-          };
-          reader.readAsText(file);
-        };
-        input.click();
-      });
-    }
-
-    /* Resto de listeners de botones de envio y panel de guardado */
-    var btnSendText = document.getElementById('btnSendText');
-    var saveNameInput = document.getElementById('saveNameInput');
-
-    if (btnSendText && saveNameInput) {
-      btnSendText.addEventListener('click', function() {
-        var text = saveNameInput.value;
-        if (!text) {
-          showToast('Escribe un nombre primero');
-          return;
-        }
-        sendStringToDoom(text, true);
-        showToast('Enviando "' + text + '" a DOOM');
-        saveNameInput.value = '';
-        closeAllPanels();
-      });
-    }
-
-    var btnShortcutSaveMenu = document.getElementById('btnShortcutSaveMenu');
-    if (btnShortcutSaveMenu) {
-      btnShortcutSaveMenu.addEventListener('click', function() {
-        var escInfo = keyInfoFor('Escape');
-        dispatchKey('keydown', escInfo);
-        setTimeout(function() { dispatchKey('keyup', escInfo); }, 50);
-
-        setTimeout(function() {
-          var downInfo = keyInfoFor('ArrowDown');
-          dispatchKey('keydown', downInfo);
-          setTimeout(function() { dispatchKey('keyup', downInfo); }, 50);
-        }, 200);
-
-        showToast('Menú abierto. Elige ranura y escribe el nombre.');
-      });
-    }
-
-    var btnKeyEnter = document.getElementById('btnKeyEnter');
-    if (btnKeyEnter) {
-      btnKeyEnter.addEventListener('click', function() {
-        var enterInfo = keyInfoFor('Enter');
-        dispatchKey('keydown', enterInfo);
-        setTimeout(function() { dispatchKey('keyup', enterInfo); }, 40);
-      });
-    }
-
-    var btnKeyBackspace = document.getElementById('btnKeyBackspace');
-    if (btnKeyBackspace) {
-      btnKeyBackspace.addEventListener('click', function() {
-        var bsInfo = keyInfoFor('Backspace');
-        dispatchKey('keydown', bsInfo);
-        setTimeout(function() { dispatchKey('keyup', bsInfo); }, 40);
-      });
-    }
-
-    var btnKeyEsc = document.getElementById('btnKeyEsc');
-    if (btnKeyEsc) {
-      btnKeyEsc.addEventListener('click', function() {
-        var escInfo = keyInfoFor('Escape');
-        dispatchKey('keydown', escInfo);
-        setTimeout(function() { dispatchKey('keyup', escInfo); }, 40);
-      });
-    }
-
-    var btnManualSave = document.getElementById('btnManualSave');
-    if (btnManualSave) {
-      btnManualSave.addEventListener('click', function() {
-        persistDoomSaves().then(function(count) {
-          showToast('¡' + count + ' archivo(s) guardado(s) permanentemente!');
-          updateSaveStatusUI();
-        });
-      });
-    }
-
-    var btnRefreshSaves = document.getElementById('btnRefreshSaves');
-    if (btnRefreshSaves) {
-      btnRefreshSaves.addEventListener('click', function() {
-        updateSaveStatusUI();
-        showToast('Lista de partidas actualizada');
-      });
-    }
+    bindClickOrTap('btnMap', function() {
+      dispatchKey('keydown', keyInfoFor('Tab'));
+      setTimeout(function() { dispatchKey('keyup', keyInfoFor('Tab')); }, 100);
+    });
 
     document.querySelectorAll('.weapon-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
+      bindClickOrTap(btn, function() {
         var weaponNum = btn.getAttribute('data-weapon');
         if (!weaponNum) return;
         var weaponKeyInfo = keyInfoFor(weaponNum);
         dispatchKey('keydown', weaponKeyInfo);
-        setTimeout(function() {
-          dispatchKey('keyup', weaponKeyInfo);
-        }, 50);
-        if (weaponPanel) weaponPanel.classList.remove('open');
+        setTimeout(function() { dispatchKey('keyup', weaponKeyInfo); }, 50);
+        closeAllPanels();
+      });
+    });
+
+    document.querySelectorAll('.cheat-btn').forEach(function(btn) {
+      bindClickOrTap(btn, function() {
+        var str = btn.getAttribute('data-cheat');
+        if (!str) return;
+
+        str.split('').forEach(function(ch, idx) {
+          setTimeout(function() {
+            dispatchKey('keydown', keyInfoFor(ch));
+            setTimeout(function() { dispatchKey('keyup', keyInfoFor(ch)); }, 40);
+          }, idx * 100);
+        });
+        showToast('Truco ' + str.toUpperCase() + ' enviado');
       });
     });
 
@@ -1094,7 +1021,7 @@
     var currentOpacityIndex = 1;
 
     if (opacityBtn) {
-      opacityBtn.addEventListener('click', function() {
+      bindClickOrTap(opacityBtn, function() {
         currentOpacityIndex = (currentOpacityIndex + 1) % opacityLevels.length;
         var opacityVal = opacityLevels[currentOpacityIndex];
         document.querySelector('.touch-controls').style.setProperty('--touch-opacity', opacityVal);
@@ -1102,20 +1029,205 @@
       });
     }
 
-    document.querySelectorAll('.cheat-btn').forEach(function(btn) {
-      btn.addEventListener('click', function() {
-        var str = btn.getAttribute('data-cheat');
-        if (!str) return;
+    function fitGame() {
+      var canvas = document.getElementById('jsdos') || document.querySelector('canvas');
+      if (!canvas) return;
+      canvas.style.width = '100vw';
+      canvas.style.height = '100vh';
+      canvas.style.objectFit = 'fill';
+    }
 
-        str.split('').forEach(function(ch, idx) {
-          setTimeout(function() {
-            dispatchKey('keydown', keyInfoFor(ch));
-            setTimeout(function() { 
-              dispatchKey('keyup', keyInfoFor(ch)); 
-            }, 40);
-          }, idx * 100);
-        });
+    function forceCanvasResize() {
+      fitGame();
+      window.dispatchEvent(new Event('resize'));
+    }
+
+    function restoreDoomSaves(fs) {
+      return new Promise(function(resolve) {
+        var restoredCount = 0;
+        try {
+          var savedData = localStorage.getItem('doom_mobile_saves');
+          if (savedData) {
+            var saves = JSON.parse(savedData);
+            var promises = [];
+            Object.keys(saves).forEach(function(fileName) {
+              var base64 = saves[fileName];
+              var binaryStr = atob(base64);
+              var bytes = new Uint8Array(binaryStr.length);
+              for (var i = 0; i < binaryStr.length; i++) {
+                bytes[i] = binaryStr.charCodeAt(i);
+              }
+              var path = '/DOOM/' + fileName;
+              promises.push(
+                fs.write(path, bytes).then(function() {
+                  restoredCount++;
+                }).catch(function(e){ console.error("Error al escribir guardado:", e); })
+              );
+            });
+            Promise.all(promises).then(function() {
+              updateSaveSlotUI();
+              resolve(restoredCount);
+            });
+            return;
+          }
+        } catch(e) {
+          console.error("Error al restaurar guardados:", e);
+        }
+        updateSaveSlotUI();
+        resolve(restoredCount);
       });
+    }
+
+    function persistDoomSaves() {
+      if (!window.ci || !window.ci.fs) return;
+      var fs = window.ci.fs;
+      var saveFiles = ['doomsav0.dsg', 'doomsav1.dsg', 'doomsav2.dsg', 'doomsav3.dsg', 'doomsav4.dsg', 'doomsav5.dsg', 'doomsav6.dsg', 'DEFAULT.SAV'];
+      var savesMap = {};
+      var promises = [];
+
+      saveFiles.forEach(function(fileName) {
+        var path = '/DOOM/' + fileName;
+        var p = fs.read(path).then(function(bytes) {
+          if (bytes && (bytes.length > 0 || bytes.byteLength > 0)) {
+            var binary = '';
+            var len = bytes.byteLength || bytes.length;
+            var u8 = new Uint8Array(bytes);
+            for (var i = 0; i < len; i++) {
+              binary += String.fromCharCode(u8[i]);
+            }
+            savesMap[fileName] = btoa(binary);
+          }
+        }).catch(function(){});
+        promises.push(p);
+      });
+
+      Promise.all(promises).then(function() {
+        if (Object.keys(savesMap).length > 0) {
+          localStorage.setItem('doom_mobile_saves', JSON.stringify(savesMap));
+          updateSaveSlotUI();
+        }
+      });
+    }
+
+    function updateSaveSlotUI() {
+      var slotList = document.getElementById('saveSlotList');
+      if (!slotList) return;
+      var savedData = localStorage.getItem('doom_mobile_saves');
+      if (!savedData) {
+        slotList.innerHTML = '<i>No hay partidas guardadas localmente.</i>';
+        return;
+      }
+      try {
+        var saves = JSON.parse(savedData);
+        var keys = Object.keys(saves);
+        if (keys.length === 0) {
+          slotList.innerHTML = '<i>No hay partidas guardadas localmente.</i>';
+        } else {
+          slotList.innerHTML = '<strong>Archivos en memoria:</strong><br>' + keys.map(function(k) {
+            return '• ' + k + ' (' + Math.round((saves[k].length * 0.75) / 1024) + ' KB)';
+          }).join('<br>');
+        }
+      } catch(e) {
+        slotList.innerText = 'Error al leer lista de guardados.';
+      }
+    }
+
+    var nativeInput = document.getElementById('nativeKeyTarget');
+    bindClickOrTap('btnOpenNativeKB', function() {
+      if (nativeInput) {
+        nativeInput.focus();
+        showToast('Teclado nativo abierto');
+      }
+    });
+
+    if (nativeInput) {
+      nativeInput.addEventListener('input', function() {
+        var val = nativeInput.value;
+        if (val.length > 0) {
+          var char = val.slice(-1);
+          dispatchKey('keydown', keyInfoFor(char));
+          setTimeout(function() { dispatchKey('keyup', keyInfoFor(char)); }, 50);
+          nativeInput.value = '';
+        }
+      });
+    }
+
+    bindClickOrTap('btnSendText', function() {
+      var input = document.getElementById('saveNameInput');
+      if (!input || !input.value) return;
+      var text = input.value;
+      text.split('').forEach(function(ch, idx) {
+        setTimeout(function() {
+          dispatchKey('keydown', keyInfoFor(ch));
+          setTimeout(function() { dispatchKey('keyup', keyInfoFor(ch)); }, 40);
+        }, idx * 80);
+      });
+      showToast('Texto enviado a DOOM');
+    });
+
+    bindClickOrTap('btnKeyEnter', function() {
+      dispatchKey('keydown', keyInfoFor('Enter'));
+      setTimeout(function() { dispatchKey('keyup', keyInfoFor('Enter')); }, 50);
+    });
+    bindClickOrTap('btnKeyBackspace', function() {
+      dispatchKey('keydown', keyInfoFor('Backspace'));
+      setTimeout(function() { dispatchKey('keyup', keyInfoFor('Backspace')); }, 50);
+    });
+    bindClickOrTap('btnKeyEsc', function() {
+      dispatchKey('keydown', keyInfoFor('Escape'));
+      setTimeout(function() { dispatchKey('keyup', keyInfoFor('Escape')); }, 50);
+    });
+
+    bindClickOrTap('btnManualSave', function() {
+      persistDoomSaves();
+      showToast('Guardado permanente completado');
+    });
+
+    bindClickOrTap('btnRefreshSaves', function() {
+      updateSaveSlotUI();
+      showToast('Lista de guardados actualizada');
+    });
+
+    bindClickOrTap('btnExportSaves', function() {
+      var savedData = localStorage.getItem('doom_mobile_saves');
+      if (!savedData) {
+        showToast('No hay partidas que exportar');
+        return;
+      }
+      var blob = new Blob([savedData], { type: 'application/json' });
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url;
+      a.download = 'doom_mobile_backup_' + new Date().toISOString().slice(0, 10) + '.json';
+      a.click();
+      URL.revokeObjectURL(url);
+      showToast('Copia exportada correctamente');
+    });
+
+    bindClickOrTap('btnImportSaves', function() {
+      var fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = '.json';
+      fileInput.onchange = function(e) {
+        var file = e.target.files[0];
+        if (!file) return;
+        var reader = new FileReader();
+        reader.onload = function(evt) {
+          try {
+            var data = JSON.parse(evt.target.result);
+            localStorage.setItem('doom_mobile_saves', JSON.stringify(data));
+            if (window.ci && window.ci.fs) {
+              restoreDoomSaves(window.ci.fs);
+            }
+            updateSaveSlotUI();
+            showToast('Copia importada con éxito');
+          } catch(err) {
+            showToast('Error al importar archivo JSON');
+          }
+        };
+        reader.readAsText(file);
+      };
+      fileInput.click();
     });
 
     window.onload = function() {
@@ -1129,26 +1241,20 @@
           return restoreDoomSaves(fs);
         }).then(function(restoredCount) {
           if (restoredCount > 0) {
-            console.log("Restauradas " + restoredCount + " partidas guardadas desde almacenamiento local.");
             showToast("Restauradas " + restoredCount + " partida(s) guardada(s)");
           }
-
           return main(["-c", "cd DOOM", "-c", "DOOM.EXE"]);
         }).then(function (ci) {
           window.ci = ci;
           fitGame();
           setInterval(forceCanvasResize, 1000);
 
-          /* Auto-guardado periódico en segundo plano cada 4 segundos */
           setInterval(function() {
             persistDoomSaves();
           }, 4000);
 
-          /* Guardado automático cuando la app se minimiza o cierra */
           document.addEventListener('visibilitychange', function() {
-            if (document.hidden) {
-              persistDoomSaves();
-            }
+            if (document.hidden) persistDoomSaves();
           });
           window.addEventListener('pagehide', function() {
             persistDoomSaves();
