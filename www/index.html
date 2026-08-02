@@ -459,6 +459,7 @@
       if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter', location:0};
       if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape', location:0};
       if (ch === 'Backspace')  return {code:'Backspace', keyCode:8, key:'Backspace', location:0};
+      if (ch === 'e' || ch === 'E') return {code:'KeyE', keyCode:69, key:'e', location:0};
       if (ch === 's' || ch === 'S') return {code:'KeyS', keyCode:83, key:'s', location:0};
       if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch, location:0};
       return {
@@ -523,16 +524,18 @@
 
       // Scancodes de DOS para compatibilidad total con JS-DOS v6 / wDosBox
       var dosScancodes = {
+        9: 15,  // Tab -> Scancode 15
+        13: 28, // Enter -> Scancode 28
+        16: 42, // Shift -> Scancode 42
         17: 29, // Ctrl -> Scancode 29
         18: 56, // Alt -> Scancode 56
-        16: 42, // Shift -> Scancode 42
-        32: 57, // Space -> Scancode 57
-        13: 28, // Enter -> Scancode 28
         27: 1,  // Esc -> Scancode 1
-        38: 72, // Up -> Scancode 72
-        40: 80, // Down -> Scancode 80
+        32: 57, // Space (Usar/Abrir) -> Scancode 57
         37: 75, // Left -> Scancode 75
+        38: 72, // Up -> Scancode 72
         39: 77, // Right -> Scancode 77
+        40: 80, // Down -> Scancode 80
+        69: 18, // 'E' (Usar opcional) -> Scancode 18
         83: 31  // 'S' -> Scancode 31
       };
 
@@ -621,12 +624,10 @@
       btn._isPressed = function() { return isPressed; };
       registeredButtons.push(btn);
 
-      // Eventos táctiles directos con preventDefault para evitar bloqueo/emulación previa
       btn.addEventListener('touchstart', press, { passive: false });
       btn.addEventListener('touchend', release, { passive: false });
       btn.addEventListener('touchcancel', release, { passive: false });
 
-      // Eventos de ratón para pruebas en escritorio/PC
       btn.addEventListener('mousedown', press);
       btn.addEventListener('mouseup', release);
       btn.addEventListener('mouseleave', release);
@@ -640,7 +641,6 @@
       });
     }
 
-    // Liberación global continua para evitar que ningún botón se quede pegado o atascado
     window.addEventListener('pointerup', releaseAllButtons, { passive: true });
     window.addEventListener('touchend', function(e) {
       if (!e.touches || e.touches.length === 0) {
@@ -662,7 +662,10 @@
     // Asignación del Botón de Disparo: combina Tecla S, Control y Clic de Ratón
     bindButtonKey('btnFire', ['s', 'Ctrl']);
     
-    bindButtonKey('btnUse', 'Space');
+    // El botón "Usar" en DOOM requiere Scancode 57 (Espacio)
+    // Se envía como evento de tecla y se asegura la compatibilidad con el emulador
+    bindButtonKey('btnUse', 'Space'); 
+
     bindButtonKey('btnSpeed', 'Shift');
     bindButtonKey('btnStrafeMod', 'Alt');
     bindButtonKey('btnEnter', 'Enter');
@@ -714,246 +717,6 @@
           });
         }
       }, { passive: false });
-    }
-
-    function keyInfoFor(ch) {
-      if (ch === 'Tab')        return {code:'Tab', keyCode:9, key:'Tab', location:0};
-      if (ch === 'ArrowUp')    return {code:'ArrowUp', keyCode:38, key:'ArrowUp', location:0};
-      if (ch === 'ArrowDown')  return {code:'ArrowDown', keyCode:40, key:'ArrowDown', location:0};
-      if (ch === 'ArrowLeft')  return {code:'ArrowLeft', keyCode:37, key:'ArrowLeft', location:0};
-      if (ch === 'ArrowRight') return {code:'ArrowRight', keyCode:39, key:'ArrowRight', location:0};
-      if (ch === 'Space' || ch === ' ') return {code:'Space', keyCode:32, key:' ', location:0};
-      if (ch === 'Alt')        return {code:'AltLeft', keyCode:18, key:'Alt', location:1, altKey:true};
-      if (ch === 'Ctrl' || ch === 'Control') return {code:'ControlLeft', keyCode:17, key:'Control', location:1, ctrlKey:true};
-      if (ch === 'Shift')      return {code:'ShiftLeft', keyCode:16, key:'Shift', location:1, shiftKey:true};
-      if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter', location:0};
-      if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape', location:0};
-      if (ch === 'Backspace')  return {code:'Backspace', keyCode:8, key:'Backspace', location:0};
-      if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch, location:0};
-      return {
-        code: 'Key' + ch.toUpperCase(), 
-        keyCode: ch.toUpperCase().charCodeAt(0), 
-        key: ch.toLowerCase(),
-        location: 0
-      };
-    }
-
-    function dispatchKey(type, info) {
-      if (!info) return;
-
-      var isDown = (type === 'keydown');
-      var canvas = document.getElementById('jsdos') || document.querySelector('canvas');
-
-      if (canvas) {
-        try { 
-          canvas.focus(); 
-          if (document.activeElement !== canvas) {
-            canvas.setAttribute('tabindex', '0');
-            canvas.focus();
-          }
-        } catch(e){}
-      }
-
-      var keyEventInit = {
-        key: info.key, 
-        code: info.code, 
-        keyCode: info.keyCode, 
-        which: info.keyCode,
-        charCode: type === 'keypress' ? info.keyCode : 0,
-        location: info.location || 0,
-        ctrlKey: info.key === 'Control' ? isDown : !!info.ctrlKey,
-        shiftKey: info.key === 'Shift' ? isDown : !!info.shiftKey,
-        altKey: info.key === 'Alt' ? isDown : !!info.altKey,
-        bubbles: true, 
-        cancelable: true,
-        composed: true,
-        view: window
-      };
-
-      var ev;
-      try {
-        ev = new KeyboardEvent(type, keyEventInit);
-      } catch(e) {
-        ev = document.createEvent('KeyboardEvent');
-        ev.initKeyboardEvent(type, true, true, window, info.key, info.location || 0, '', false, '');
-      }
-
-      try {
-        Object.defineProperty(ev, 'keyCode', { get: function() { return info.keyCode; }, configurable: true });
-        Object.defineProperty(ev, 'which', { get: function() { return info.keyCode; }, configurable: true });
-        Object.defineProperty(ev, 'charCode', { get: function() { return type === 'keypress' ? info.keyCode : 0; }, configurable: true });
-        Object.defineProperty(ev, 'code', { get: function() { return info.code; }, configurable: true });
-        Object.defineProperty(ev, 'key', { get: function() { return info.key; }, configurable: true });
-      } catch(e) {}
-
-      window.dispatchEvent(ev);
-      document.dispatchEvent(ev);
-      if (canvas) canvas.dispatchEvent(ev);
-
-      // Si es disparo (Ctrl=17 o 's'=83), activar disparo de ratón y enviar ambos códigos
-      if (info.keyCode === 17 || info.keyCode === 83) {
-        dispatchMouseFire(isDown);
-        if (window.ci && typeof window.ci.sendKeyEvent === 'function') {
-          try { window.ci.sendKeyEvent(29, isDown); } catch(e){} // DOS Scancode Left Control
-          try { window.ci.sendKeyEvent(31, isDown); } catch(e){} // DOS Scancode 'S'
-        }
-      }
-
-      if (window.ci && typeof window.ci.sendKeyEvent === 'function') {
-        try { window.ci.sendKeyEvent(info.keyCode, isDown); } catch(e){}
-      }
-      if (window.wDosBox && typeof window.wDosBox.sendKeyEvent === 'function') {
-        try { window.wDosBox.sendKeyEvent(info.keyCode, isDown); } catch(e){}
-      }
-    }
-
-    function bindClickOrTap(elementOrId, handler) {
-      var el = typeof elementOrId === 'string' ? document.getElementById(elementOrId) : elementOrId;
-      if (!el) return;
-      
-      var handled = false;
-      function trigger(e) {
-        if (e) {
-          if (e.cancelable) e.preventDefault();
-          e.stopPropagation();
-        }
-        if (handled) return;
-        handled = true;
-        setTimeout(function() { handled = false; }, 300);
-        handler(e);
-      }
-
-      el.addEventListener('pointerdown', trigger, { passive: false });
-      el.addEventListener('touchstart', trigger, { passive: false });
-      el.addEventListener('click', function(e) {
-        if (!handled) handler(e);
-      });
-    }
-
-    var registeredButtons = [];
-
-    function bindButtonKey(elementId, keys) {
-      var btn = typeof elementId === 'string' ? document.getElementById(elementId) : elementId;
-      if (!btn) return;
-      
-      var isPressed = false;
-      var keyList = Array.isArray(keys) ? keys : [keys];
-
-      function press(e) {
-        if (e) {
-          if (e.cancelable) e.preventDefault();
-          e.stopPropagation();
-        }
-        if (isPressed) return;
-        isPressed = true;
-        btn.classList.add('active');
-        keyList.forEach(function(k) {
-          dispatchKey('keydown', keyInfoFor(k));
-        });
-      }
-
-      function release(e) {
-        if (e) {
-          if (e.cancelable) e.preventDefault();
-          e.stopPropagation();
-        }
-        if (!isPressed) return;
-        isPressed = false;
-        btn.classList.remove('active');
-        keyList.forEach(function(k) {
-          dispatchKey('keyup', keyInfoFor(k));
-        });
-      }
-
-      btn._press = press;
-      btn._release = release;
-      registeredButtons.push(btn);
-
-      if (window.PointerEvent) {
-        btn.addEventListener('pointerdown', press, { passive: false });
-        btn.addEventListener('pointerup', release, { passive: false });
-        btn.addEventListener('pointercancel', release, { passive: false });
-        btn.addEventListener('pointerleave', release, { passive: false });
-      } else {
-        btn.addEventListener('touchstart', press, { passive: false });
-        btn.addEventListener('touchend', release, { passive: false });
-        btn.addEventListener('touchcancel', release, { passive: false });
-        btn.addEventListener('mousedown', press);
-        btn.addEventListener('mouseup', release);
-        btn.addEventListener('mouseleave', release);
-      }
-    }
-
-    function releaseAllButtons() {
-      registeredButtons.forEach(function(btn) {
-        if (btn && btn._release) {
-          btn._release();
-        }
-      });
-    }
-
-    // Liberación global para evitar que los botones queden "presionados/pegados"
-    window.addEventListener('pointerup', releaseAllButtons, { passive: true });
-    window.addEventListener('touchend', releaseAllButtons, { passive: true });
-    window.addEventListener('touchcancel', releaseAllButtons, { passive: true });
-    window.addEventListener('pointercancel', releaseAllButtons, { passive: true });
-    window.addEventListener('blur', releaseAllButtons);
-
-    // Asignación de controles direccionales y de acción
-    bindButtonKey('dpadUp', 'ArrowUp');
-    bindButtonKey('dpadDown', 'ArrowDown');
-    bindButtonKey('dpadLeft', 'ArrowLeft');
-    bindButtonKey('dpadRight', 'ArrowRight');
-    
-    // Asignación de Disparo: envía Ctrl y la tecla S para compatibilidad total
-    bindButtonKey('btnFire', ['Ctrl', 's']);
-    
-    bindButtonKey('btnUse', 'Space');
-    bindButtonKey('btnSpeed', 'Shift');
-    bindButtonKey('btnStrafeMod', 'Alt');
-    bindButtonKey('btnEnter', 'Enter');
-    bindButtonKey('btnEsc', 'Escape');
-
-    // Deslizamiento multitáctil suave para el D-Pad
-    var dpadContainer = document.querySelector('.dpad');
-    var dpadBtns = {
-      dpadUp: document.getElementById('dpadUp'),
-      dpadDown: document.getElementById('dpadDown'),
-      dpadLeft: document.getElementById('dpadLeft'),
-      dpadRight: document.getElementById('dpadRight')
-    };
-
-    if (dpadContainer) {
-      function handleDpadMove(e) {
-        if (e.cancelable) e.preventDefault();
-        var touches = e.touches || (e.clientX ? [e] : []);
-        var touchedIds = {};
-
-        for (var i = 0; i < touches.length; i++) {
-          var touch = touches[i];
-          var target = document.elementFromPoint(touch.clientX, touch.clientY);
-          if (target) {
-            var btnEl = target.closest('.touch-btn');
-            if (btnEl && btnEl.id && dpadBtns[btnEl.id]) {
-              touchedIds[btnEl.id] = true;
-            }
-          }
-        }
-
-        Object.keys(dpadBtns).forEach(function(id) {
-          var btn = dpadBtns[id];
-          if (btn && btn._press && btn._release) {
-            if (touchedIds[id]) {
-              btn._press();
-            } else {
-              btn._release();
-            }
-          }
-        });
-      }
-
-      dpadContainer.addEventListener('touchmove', handleDpadMove, { passive: false });
-      dpadContainer.addEventListener('pointermove', handleDpadMove, { passive: false });
     }
 
     function closeAllPanels() {
