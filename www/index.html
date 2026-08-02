@@ -139,6 +139,7 @@
     align-items: center;
     pointer-events: none;
     gap: 6px;
+    flex-wrap: wrap;
   }
 
   .top-btn {
@@ -164,50 +165,138 @@
     border-color: #ff4444;
   }
 
-  #cheatPanel {
+  #cheatPanel, #weaponPanel, #keyboardPanel, #savePanel {
     position: fixed;
     top: 50px; 
-    left: 10px;
     z-index: 65;
     pointer-events: auto;
     background: rgba(15, 15, 15, 0.95);
     border: 1px solid #444;
     border-radius: 8px;
     padding: 12px;
-    width: 230px;
+    width: 250px;
     max-height: 70vh;
     overflow-y: auto;
     display: none;
     box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
   }
 
-  #cheatPanel.open { display: block; }
+  #cheatPanel { left: 10px; }
+  #weaponPanel { left: 90px; }
+  #keyboardPanel { right: 10px; left: auto; width: 280px; }
+  #savePanel { right: 10px; left: auto; width: 260px; }
 
-  #weaponPanel {
-    position: fixed;
-    top: 50px; 
-    left: 90px;
-    z-index: 65;
-    pointer-events: auto;
-    background: rgba(15, 15, 15, 0.95);
-    border: 1px solid #444;
-    border-radius: 8px;
-    padding: 12px;
-    width: 220px;
-    max-height: 70vh;
-    overflow-y: auto;
-    display: none;
-    box-shadow: 0 4px 25px rgba(0, 0, 0, 0.9);
+  #cheatPanel.open, #weaponPanel.open, #keyboardPanel.open, #savePanel.open { 
+    display: block; 
   }
 
-  #weaponPanel.open { display: block; }
-
-  #cheatPanel h4, #weaponPanel h4 {
+  #cheatPanel h4, #weaponPanel h4, #keyboardPanel h4, #savePanel h4 {
     margin: 0 0 10px 0;
     color: #ff4444;
     font-size: 13px;
     border-bottom: 1px solid #333;
     padding-bottom: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .panel-input-group {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+
+  .panel-input {
+    flex: 1;
+    background: #222;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 8px;
+    border-radius: 5px;
+    font-size: 13px;
+    outline: none;
+  }
+
+  .panel-input:focus {
+    border-color: #ff4444;
+  }
+
+  .action-btn {
+    background: #333;
+    border: 1px solid #555;
+    color: #fff;
+    padding: 8px 10px;
+    border-radius: 5px;
+    font-size: 11px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 100%;
+    margin-bottom: 6px;
+  }
+
+  .action-btn:active {
+    background: #ff4444;
+    color: #000;
+  }
+
+  .action-btn.primary {
+    background: #b30000;
+    border-color: #ff3333;
+  }
+
+  .save-slot-item {
+    background: #222;
+    border: 1px solid #3a3a3a;
+    border-radius: 5px;
+    padding: 8px;
+    margin-bottom: 6px;
+    font-size: 11px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .save-slot-item .slot-name {
+    color: #ffcc00;
+    font-weight: bold;
+  }
+
+  .toast-msg {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(200, 0, 0, 0.9);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 100;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.8);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .toast-msg.show {
+    opacity: 1;
+  }
+
+  /* Input oculto para activar el teclado nativo de Android/iOS */
+  #nativeKeyTarget {
+    position: absolute;
+    top: -100px;
+    left: -100px;
+    opacity: 0;
+    width: 1px;
+    height: 1px;
+    pointer-events: auto;
   }
 
   .cheat-btn, .weapon-btn {
@@ -335,11 +424,19 @@
     <div>Gira tu dispositivo a modo horizontal para jugar</div>
   </div>
 
+  <!-- Input oculto para forzar la apertura del teclado móvil nativo -->
+  <input type="text" id="nativeKeyTarget" autocomplete="off" autocapitalize="off" spellcheck="false" />
+
+  <!-- Toast de Notificaciones -->
+  <div id="toast" class="toast-msg">Notificación</div>
+
   <div class="top-bar">
     <button id="cheatToggle" class="top-btn"><i class="fas fa-flask"></i> Trucos</button>
     <button id="weaponToggle" class="top-btn"><i class="fas fa-gun"></i> Armas</button>
     <button id="opacityBtn" class="top-btn"><i class="fas fa-eye"></i> Botones: 35%</button>
-    <button id="btnMap" class="top-btn"><i class="fas fa-map-marked-alt"></i> Mapa (MAP)</button>
+    <button id="btnMap" class="top-btn"><i class="fas fa-map-marked-alt"></i> Mapa</button>
+    <button id="keyboardToggle" class="top-btn"><i class="fas fa-keyboard"></i> Teclado</button>
+    <button id="saveToggle" class="top-btn"><i class="fas fa-save"></i> Guardados</button>
   </div>
 
   <div id="cheatPanel">
@@ -363,6 +460,50 @@
     <button class="weapon-btn" data-weapon="5">5. Lanzacohetes<small>Tecla 5</small></button>
     <button class="weapon-btn" data-weapon="6">6. Rifle de Plasma<small>Tecla 6</small></button>
     <button class="weapon-btn" data-weapon="7">7. BFG 9000<small>Tecla 7</small></button>
+  </div>
+
+  <!-- Panel de Entrada de Teclado y Escritura de Progreso -->
+  <div id="keyboardPanel">
+    <h4>Teclado / Guardado de Nombre</h4>
+    
+    <button id="btnOpenNativeKB" class="action-btn primary"><i class="fas fa-keyboard"></i> Abrir Teclado Táctil Nativo</button>
+    
+    <div style="font-size: 11px; color: #aaa; margin: 8px 0 4px 0;">Escribe el nombre de la partida y envíalo a DOOM:</div>
+    <div class="panel-input-group">
+      <input type="text" id="saveNameInput" class="panel-input" placeholder="Ej: NIVEL 3 BASE" maxlength="16" inputmode="text" autocomplete="off" />
+      <button id="btnSendText" class="action-btn" style="width: auto;"><i class="fas fa-paper-plane"></i> Enviar</button>
+    </div>
+
+    <div style="font-size: 11px; color: #aaa; margin: 6px 0;">Asistente de Ranura (Save Slot):</div>
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-bottom: 8px;">
+      <button class="action-btn btn-slot-save" data-slot="0"><i class="fas fa-save"></i> Guardar Ranura 1</button>
+      <button class="action-btn btn-slot-save" data-slot="1"><i class="fas fa-save"></i> Guardar Ranura 2</button>
+      <button class="action-btn btn-slot-save" data-slot="2"><i class="fas fa-save"></i> Guardar Ranura 3</button>
+      <button class="action-btn btn-slot-save" data-slot="3"><i class="fas fa-save"></i> Guardar Ranura 4</button>
+    </div>
+
+    <div style="font-size: 11px; color: #aaa; margin: 6px 0;">Atajos Menú Guardar DOOM:</div>
+    <button id="btnShortcutSaveMenu" class="action-btn"><i class="fas fa-bars"></i> Abrir Menú Guardar en Juego</button>
+    <div style="display: flex; gap: 4px;">
+      <button id="btnKeyEnter" class="action-btn" style="flex:1;"><i class="fas fa-level-down-alt"></i> Enter</button>
+      <button id="btnKeyBackspace" class="action-btn" style="flex:1;"><i class="fas fa-backspace"></i> Borrar</button>
+      <button id="btnKeyEsc" class="action-btn" style="flex:1;"><i class="fas fa-times"></i> Esc</button>
+    </div>
+  </div>
+
+  <!-- Panel de Estado de Partidas Guardadas -->
+  <div id="savePanel">
+    <h4>Partidas Guardadas</h4>
+    <div id="saveSlotList" style="font-size: 11px; color: #bbb; margin-bottom: 10px;">
+      Cargando almacenamiento local...
+    </div>
+    <button id="btnManualSave" class="action-btn primary"><i class="fas fa-save"></i> Forzar Guardado Permanente Ahora</button>
+    <button id="btnRefreshSaves" class="action-btn"><i class="fas fa-sync-alt"></i> Comprobar / Actualizar Lista</button>
+    
+    <div style="border-top: 1px solid #333; margin-top: 8px; padding-top: 8px;">
+      <button id="btnExportSaves" class="action-btn" style="background:#224422;"><i class="fas fa-file-export"></i> Exportar Copia de Seguridad</button>
+      <button id="btnImportSaves" class="action-btn" style="background:#442222;"><i class="fas fa-file-import"></i> Importar Copia de Seguridad</button>
+    </div>
   </div>
 
   <div class="container">
@@ -394,6 +535,224 @@
 
   <script type="text/javascript">
     var gameContainer = document.getElementById('gameContainer');
+
+    function showToast(text) {
+      var toast = document.getElementById('toast');
+      if (!toast) return;
+      toast.innerText = text;
+      toast.classList.add('show');
+      setTimeout(function() {
+        toast.classList.remove('show');
+      }, 2500);
+    }
+
+    /* -------------------------------------------------------------
+       SISTEMA DE ALMACENAMIENTO PERMANENTE (INDEXEDDB + LOCALSTORAGE)
+    ------------------------------------------------------------- */
+    var DB_NAME = 'DoomMobileSavesDB';
+    var DB_VERSION = 1;
+    var STORE_NAME = 'saves';
+    var LS_BACKUP_KEY = 'DOOM_MOBILE_SAVES_LS_BACKUP';
+
+    function openSavesDB() {
+      return new Promise(function(resolve, reject) {
+        var request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = function(e) {
+          var db = e.target.result;
+          if (!db.objectStoreNames.contains(STORE_NAME)) {
+            db.createObjectStore(STORE_NAME);
+          }
+        };
+        request.onsuccess = function() { resolve(request.result); };
+        request.onerror = function() { reject(request.error); };
+      });
+    }
+
+    function uint8ToBase64(bytes) {
+      var binary = '';
+      var len = bytes.byteLength;
+      for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(bytes[i]);
+      }
+      return window.btoa(binary);
+    }
+
+    function base64ToUint8(base64) {
+      var binary_string = window.atob(base64);
+      var len = binary_string.length;
+      var bytes = new Uint8Array(len);
+      for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+      }
+      return bytes;
+    }
+
+    function saveFileToDB(filename, uint8Data) {
+      // Guardado primario en IndexedDB
+      var p1 = openSavesDB().then(function(db) {
+        return new Promise(function(resolve, reject) {
+          var tx = db.transaction(STORE_NAME, 'readwrite');
+          var store = tx.objectStore(STORE_NAME);
+          store.put({ data: uint8Data, timestamp: Date.now() }, filename.toLowerCase());
+          tx.oncomplete = function() { resolve(); };
+          tx.onerror = function() { reject(tx.error); };
+        });
+      });
+
+      // Respaldo secundario en LocalStorage para APKs
+      try {
+        var lsData = JSON.parse(localStorage.getItem(LS_BACKUP_KEY) || '{}');
+        lsData[filename.toLowerCase()] = {
+          b64: uint8ToBase64(uint8Data),
+          timestamp: Date.now()
+        };
+        localStorage.setItem(LS_BACKUP_KEY, JSON.stringify(lsData));
+      } catch(e) {
+        console.warn('Fallback LocalStorage lleno o restringido:', e);
+      }
+
+      return p1;
+    }
+
+    function getAllSavesFromDB() {
+      return openSavesDB().then(function(db) {
+        return new Promise(function(resolve, reject) {
+          var tx = db.transaction(STORE_NAME, 'readonly');
+          var store = tx.objectStore(STORE_NAME);
+          var saves = {};
+          var req = store.openCursor();
+          req.onsuccess = function(e) {
+            var cursor = e.target.result;
+            if (cursor) {
+              saves[cursor.key.toLowerCase()] = cursor.value;
+              cursor.continue();
+            } else {
+              // Fusionar con respaldo de LocalStorage si IndexedDB estaba vacío
+              try {
+                var lsData = JSON.parse(localStorage.getItem(LS_BACKUP_KEY) || '{}');
+                Object.keys(lsData).forEach(function(f) {
+                  if (!saves[f]) {
+                    saves[f] = {
+                      data: base64ToUint8(lsData[f].b64),
+                      timestamp: lsData[f].timestamp
+                    };
+                  }
+                });
+              } catch(err) {}
+              resolve(saves);
+            }
+          };
+          req.onerror = function() { reject(req.error); };
+        });
+      });
+    }
+
+    function getEmscriptenFS() {
+      if (window.wDosBox && window.wDosBox.FS) return window.wDosBox.FS;
+      if (window.Module && window.Module.FS) return window.Module.FS;
+      return null;
+    }
+
+    function persistDoomSaves() {
+      var FS = getEmscriptenFS();
+      if (!FS) return Promise.resolve(0);
+
+      var searchDirs = ['/DOOM', '/doom', '/'];
+      var files = [];
+      var foundDir = '/DOOM';
+
+      for (var i = 0; i < searchDirs.length; i++) {
+        try {
+          var list = FS.readdir(searchDirs[i]);
+          if (list && list.length > 0) {
+            files = list;
+            foundDir = searchDirs[i];
+            break;
+          }
+        } catch(e) {}
+      }
+
+      var savePromises = [];
+      var savedCount = 0;
+
+      files.forEach(function(file) {
+        var lower = file.toLowerCase();
+        if (lower.endsWith('.dsg') || lower === 'default.cfg') {
+          var path = (foundDir === '/' ? '' : foundDir) + '/' + file;
+          try {
+            var data = FS.readFile(path);
+            if (data && data.length > 0) {
+              savedCount++;
+              savePromises.push(saveFileToDB(file, data));
+            }
+          } catch(err) {
+            console.warn('Error leyendo archivo en FS:', file, err);
+          }
+        }
+      });
+
+      return Promise.all(savePromises).then(function() {
+        return savedCount;
+      });
+    }
+
+    function restoreDoomSaves(dosFs) {
+      return getAllSavesFromDB().then(function(saves) {
+        var keys = Object.keys(saves);
+        if (keys.length === 0) return 0;
+
+        var FS = getEmscriptenFS();
+        var restoredCount = 0;
+
+        keys.forEach(function(file) {
+          var saveObj = saves[file];
+          var uint8Data = saveObj.data;
+          var paths = ['DOOM/' + file, 'doom/' + file, file];
+
+          paths.forEach(function(relativePath) {
+            if (dosFs && dosFs.createFile) {
+              try { dosFs.createFile(relativePath, uint8Data); } catch(e){}
+            } else if (FS) {
+              try { FS.writeFile('/' + relativePath, uint8Data); } catch(e){}
+            }
+          });
+          restoredCount++;
+        });
+
+        return restoredCount;
+      });
+    }
+
+    function updateSaveStatusUI() {
+      var saveSlotList = document.getElementById('saveSlotList');
+      if (!saveSlotList) return;
+
+      getAllSavesFromDB().then(function(saves) {
+        var keys = Object.keys(saves);
+        if (keys.length === 0) {
+          saveSlotList.innerHTML = '<p style="margin:0;">No hay partidas guardadas aún.<br>Usa <b>Save Game</b> en el menú de DOOM o el asistente táctil.</p>';
+          return;
+        }
+
+        var html = '';
+        keys.forEach(function(file) {
+          if (file.toLowerCase().endsWith('.dsg')) {
+            var slotNum = file.replace(/[^0-9]/g, '');
+            var num = parseInt(slotNum, 10);
+            var slotLabel = isNaN(num) ? file : 'Ranura ' + (num + 1);
+            var dateStr = new Date(saves[file].timestamp).toLocaleTimeString();
+            html += '<div class="save-slot-item">' +
+                      '<div><span class="slot-name">' + slotLabel + '</span> (' + file + ')</div>' +
+                      '<div style="color:#888;">' + dateStr + '</div>' +
+                    '</div>';
+          }
+        });
+
+        saveSlotList.innerHTML = html || '<p style="margin:0;">Archivos de configuración detectados.</p>';
+      }).catch(function() {
+        saveSlotList.innerText = 'Error al leer almacenamiento local.';
+      });
+    }
 
     function forceCanvasResize() {
       var canvases = document.querySelectorAll('#jsdos canvas, .game-container canvas, canvas#jsdos');
@@ -431,29 +790,17 @@
       if (ch === 'ArrowDown')  return {code:'ArrowDown', keyCode:40, key:'ArrowDown'};
       if (ch === 'ArrowLeft')  return {code:'ArrowLeft', keyCode:37, key:'ArrowLeft'};
       if (ch === 'ArrowRight') return {code:'ArrowRight', keyCode:39, key:'ArrowRight'};
-      if (ch === 'Space')      return {code:'Space', keyCode:32, key:' '};
+      if (ch === 'Space' || ch === ' ') return {code:'Space', keyCode:32, key:' '};
       if (ch === 'Alt')        return {code:'AltLeft', keyCode:18, key:'Alt'};
       if (ch === 'Enter')      return {code:'Enter', keyCode:13, key:'Enter'};
       if (ch === 'Escape')     return {code:'Escape', keyCode:27, key:'Escape'};
+      if (ch === 'Backspace')  return {code:'Backspace', keyCode:8, key:'Backspace'};
       if (/^[0-9]$/.test(ch))  return {code:'Digit' + ch, keyCode: 48 + parseInt(ch, 10), key: ch};
       return {
         code: 'Key' + ch.toUpperCase(), 
         keyCode: ch.toUpperCase().charCodeAt(0), 
         key: ch.toLowerCase()
       };
-    }
-
-    /* Botón Mapa (MAP) - Emite la tecla Tab */
-    var btnMap = document.getElementById('btnMap');
-    if (btnMap) {
-      btnMap.addEventListener('click', function(e) {
-        if (e) e.preventDefault();
-        var tabInfo = keyInfoFor('Tab');
-        dispatchKey('keydown', tabInfo);
-        setTimeout(function() {
-          dispatchKey('keyup', tabInfo);
-        }, 80);
-      });
     }
 
     function dispatchKey(type, info) {
@@ -468,64 +815,264 @@
       var canvas = document.getElementById('jsdos');
       if (canvas) canvas.dispatchEvent(ev);
       document.dispatchEvent(ev);
+      window.dispatchEvent(ev);
     }
 
-    function bindHoldButton(el, ch) {
-      if (!el) return;
-      var active = false;
+    /* -------------------------------------------------------------
+       TECLADO NATIVO Y ASISTENTE DE ESCRITURA PARA GUARDADO
+    ------------------------------------------------------------- */
+    var nativeKeyTarget = document.getElementById('nativeKeyTarget');
+    var btnOpenNativeKB = document.getElementById('btnOpenNativeKB');
 
-      function press(e) { 
-        e.preventDefault(); 
-        if (active) return; 
-        active = true; 
-        el.classList.add('active'); 
-        dispatchKey('keydown', keyInfoFor(ch)); 
-      }
-
-      function release(e) { 
-        if (e) e.preventDefault(); 
-        if (!active) return; 
-        active = false; 
-        el.classList.remove('active'); 
-        dispatchKey('keyup', keyInfoFor(ch)); 
-      }
-
-      el.addEventListener('touchstart', press, {passive: false});
-      el.addEventListener('touchend', release, {passive: false});
-      el.addEventListener('touchcancel', release, {passive: false});
-      el.addEventListener('mousedown', press);
-      el.addEventListener('mouseup', release);
-      el.addEventListener('mouseleave', release);
-    }
-
-    bindHoldButton(document.getElementById('dpadUp'), 'ArrowUp');
-    bindHoldButton(document.getElementById('dpadDown'), 'ArrowDown');
-    bindHoldButton(document.getElementById('dpadLeft'), 'ArrowLeft');
-    bindHoldButton(document.getElementById('dpadRight'), 'ArrowRight');
-    bindHoldButton(document.getElementById('btnFire'), 's');
-    bindHoldButton(document.getElementById('btnUse'), 'w');
-    bindHoldButton(document.getElementById('btnSpeed'), 'Space');
-    bindHoldButton(document.getElementById('btnStrafeMod'), 'Alt');
-    bindHoldButton(document.getElementById('btnEnter'), 'Enter');
-    bindHoldButton(document.getElementById('btnEsc'), 'Escape');
-
-    /* Lógica del Panel de Selección de Armas en la Barra Superior */
-    var weaponToggle = document.getElementById('weaponToggle');
-    var weaponPanel = document.getElementById('weaponPanel');
-    var cheatToggle = document.getElementById('cheatToggle');
-    var cheatPanel = document.getElementById('cheatPanel');
-
-    if (weaponToggle && weaponPanel) {
-      weaponToggle.addEventListener('click', function() {
-        if (cheatPanel) cheatPanel.classList.remove('open');
-        weaponPanel.classList.toggle('open');
+    if (btnOpenNativeKB && nativeKeyTarget) {
+      btnOpenNativeKB.addEventListener('click', function(e) {
+        e.preventDefault();
+        nativeKeyTarget.focus();
+        nativeKeyTarget.click();
+        showToast('Teclado nativo activado para escribir');
       });
     }
 
-    if (cheatToggle && cheatPanel) {
-      cheatToggle.addEventListener('click', function() {
-        if (weaponPanel) weaponPanel.classList.remove('open');
-        cheatPanel.classList.toggle('open');
+    if (nativeKeyTarget) {
+      nativeKeyTarget.addEventListener('input', function(e) {
+        var val = nativeKeyTarget.value;
+        if (val.length > 0) {
+          var char = val.charAt(val.length - 1);
+          var info = keyInfoFor(char);
+          dispatchKey('keydown', info);
+          setTimeout(function() { dispatchKey('keyup', info); }, 40);
+          nativeKeyTarget.value = '';
+        }
+      });
+
+      nativeKeyTarget.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+          var bsInfo = keyInfoFor('Backspace');
+          dispatchKey('keydown', bsInfo);
+          setTimeout(function() { dispatchKey('keyup', bsInfo); }, 40);
+        } else if (e.key === 'Enter') {
+          var entInfo = keyInfoFor('Enter');
+          dispatchKey('keydown', entInfo);
+          setTimeout(function() { dispatchKey('keyup', entInfo); }, 40);
+        }
+      });
+    }
+
+    function sendStringToDoom(str, sendEnterAfter) {
+      if (!str) return;
+      var cleanStr = str.trim();
+      var delay = 0;
+
+      for (var i = 0; i < cleanStr.length; i++) {
+        (function(ch, d) {
+          setTimeout(function() {
+            var info = keyInfoFor(ch);
+            dispatchKey('keydown', info);
+            setTimeout(function() { dispatchKey('keyup', info); }, 40);
+          }, d);
+        })(cleanStr.charAt(i), delay);
+        delay += 90;
+      }
+
+      if (sendEnterAfter) {
+        setTimeout(function() {
+          var enterInfo = keyInfoFor('Enter');
+          dispatchKey('keydown', enterInfo);
+          setTimeout(function() { dispatchKey('keyup', enterInfo); }, 40);
+        }, delay + 100);
+      }
+    }
+
+    // Botones de Guardado Rápido en Ranura Asistida
+    document.querySelectorAll('.btn-slot-save').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        var slotIndex = parseInt(btn.getAttribute('data-slot'), 10) || 0;
+        var nameInput = document.getElementById('saveNameInput');
+        var slotName = (nameInput && nameInput.value.trim()) ? nameInput.value.trim() : ('SLOT ' + (slotIndex + 1));
+
+        showToast('Guardando en Ranura ' + (slotIndex + 1) + '...');
+
+        // Secuencia automatizada: Esc -> Menú Guardar -> Seleccionar Ranura -> Nombre -> Enter
+        dispatchKey('keydown', keyInfoFor('Escape'));
+        setTimeout(function() { dispatchKey('keyup', keyInfoFor('Escape')); }, 50);
+
+        setTimeout(function() {
+          dispatchKey('keydown', keyInfoFor('ArrowDown'));
+          setTimeout(function() { dispatchKey('keyup', keyInfoFor('ArrowDown')); }, 50);
+        }, 200);
+
+        setTimeout(function() {
+          dispatchKey('keydown', keyInfoFor('Enter'));
+          setTimeout(function() { dispatchKey('keyup', keyInfoFor('Enter')); }, 50);
+        }, 350);
+
+        // Mover a la ranura especificada
+        setTimeout(function() {
+          for (var i = 0; i < slotIndex; i++) {
+            (function(idx) {
+              setTimeout(function() {
+                dispatchKey('keydown', keyInfoFor('ArrowDown'));
+                setTimeout(function() { dispatchKey('keyup', keyInfoFor('ArrowDown')); }, 40);
+              }, idx * 80);
+            })(i);
+          }
+        }, 500);
+
+        // Confirmar selección y escribir nombre
+        var writeDelay = 600 + (slotIndex * 80);
+        setTimeout(function() {
+          dispatchKey('keydown', keyInfoFor('Enter'));
+          setTimeout(function() { dispatchKey('keyup', keyInfoFor('Enter')); }, 50);
+        }, writeDelay);
+
+        setTimeout(function() {
+          sendStringToDoom(slotName, true);
+        }, writeDelay + 200);
+
+        // Forzar sincronización con el disco duro virtual
+        setTimeout(function() {
+          persistDoomSaves().then(function(count) {
+            showToast('¡Ranura ' + (slotIndex + 1) + ' guardada con éxito!');
+            updateSaveStatusUI();
+          });
+        }, writeDelay + 1800);
+
+        closeAllPanels();
+      });
+    });
+
+    var btnExportSaves = document.getElementById('btnExportSaves');
+    if (btnExportSaves) {
+      btnExportSaves.addEventListener('click', function() {
+        getAllSavesFromDB().then(function(saves) {
+          var exportObj = {};
+          Object.keys(saves).forEach(function(key) {
+            exportObj[key] = {
+              b64: uint8ToBase64(saves[key].data),
+              timestamp: saves[key].timestamp
+            };
+          });
+          var jsonStr = JSON.stringify(exportObj);
+          var blob = new Blob([jsonStr], {type: 'application/json'});
+          var url = URL.createObjectURL(blob);
+          var a = document.createElement('a');
+          a.href = url;
+          a.download = 'DOOM_SAVES_BACKUP.json';
+          a.click();
+          showToast('Copia de seguridad exportada');
+        });
+      });
+    }
+
+    var btnImportSaves = document.getElementById('btnImportSaves');
+    if (btnImportSaves) {
+      btnImportSaves.addEventListener('click', function() {
+        var input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = function(e) {
+          var file = e.target.files[0];
+          if (!file) return;
+          var reader = new FileReader();
+          reader.onload = function(evt) {
+            try {
+              var imported = JSON.parse(evt.target.result);
+              var promises = [];
+              Object.keys(imported).forEach(function(k) {
+                var bytes = base64ToUint8(imported[k].b64);
+                promises.push(saveFileToDB(k, bytes));
+              });
+              Promise.all(promises).then(function() {
+                showToast('Partidas importadas correctamente. Reinicia para cargar.');
+                updateSaveStatusUI();
+              });
+            } catch(err) {
+              showToast('Error al importar el archivo');
+            }
+          };
+          reader.readAsText(file);
+        };
+        input.click();
+      });
+    }
+
+    /* Resto de listeners de botones de envio y panel de guardado */
+    var btnSendText = document.getElementById('btnSendText');
+    var saveNameInput = document.getElementById('saveNameInput');
+
+    if (btnSendText && saveNameInput) {
+      btnSendText.addEventListener('click', function() {
+        var text = saveNameInput.value;
+        if (!text) {
+          showToast('Escribe un nombre primero');
+          return;
+        }
+        sendStringToDoom(text, true);
+        showToast('Enviando "' + text + '" a DOOM');
+        saveNameInput.value = '';
+        closeAllPanels();
+      });
+    }
+
+    var btnShortcutSaveMenu = document.getElementById('btnShortcutSaveMenu');
+    if (btnShortcutSaveMenu) {
+      btnShortcutSaveMenu.addEventListener('click', function() {
+        var escInfo = keyInfoFor('Escape');
+        dispatchKey('keydown', escInfo);
+        setTimeout(function() { dispatchKey('keyup', escInfo); }, 50);
+
+        setTimeout(function() {
+          var downInfo = keyInfoFor('ArrowDown');
+          dispatchKey('keydown', downInfo);
+          setTimeout(function() { dispatchKey('keyup', downInfo); }, 50);
+        }, 200);
+
+        showToast('Menú abierto. Elige ranura y escribe el nombre.');
+      });
+    }
+
+    var btnKeyEnter = document.getElementById('btnKeyEnter');
+    if (btnKeyEnter) {
+      btnKeyEnter.addEventListener('click', function() {
+        var enterInfo = keyInfoFor('Enter');
+        dispatchKey('keydown', enterInfo);
+        setTimeout(function() { dispatchKey('keyup', enterInfo); }, 40);
+      });
+    }
+
+    var btnKeyBackspace = document.getElementById('btnKeyBackspace');
+    if (btnKeyBackspace) {
+      btnKeyBackspace.addEventListener('click', function() {
+        var bsInfo = keyInfoFor('Backspace');
+        dispatchKey('keydown', bsInfo);
+        setTimeout(function() { dispatchKey('keyup', bsInfo); }, 40);
+      });
+    }
+
+    var btnKeyEsc = document.getElementById('btnKeyEsc');
+    if (btnKeyEsc) {
+      btnKeyEsc.addEventListener('click', function() {
+        var escInfo = keyInfoFor('Escape');
+        dispatchKey('keydown', escInfo);
+        setTimeout(function() { dispatchKey('keyup', escInfo); }, 40);
+      });
+    }
+
+    var btnManualSave = document.getElementById('btnManualSave');
+    if (btnManualSave) {
+      btnManualSave.addEventListener('click', function() {
+        persistDoomSaves().then(function(count) {
+          showToast('¡' + count + ' archivo(s) guardado(s) permanentemente!');
+          updateSaveStatusUI();
+        });
+      });
+    }
+
+    var btnRefreshSaves = document.getElementById('btnRefreshSaves');
+    if (btnRefreshSaves) {
+      btnRefreshSaves.addEventListener('click', function() {
+        updateSaveStatusUI();
+        showToast('Lista de partidas actualizada');
       });
     }
 
@@ -579,13 +1126,39 @@
         wdosboxUrl: "https://js-dos.com/6.22/current/wdosbox.js",
       }).ready(function (fs, main) {
         fs.extract("https://js-dos.com/cdn/upload/DOOM-@evilution.zip").then(function () {
-          main(["-c", "cd DOOM", "-c", "DOOM.EXE"]).then(function (ci) {
-            window.ci = ci;
-            fitGame();
-            setInterval(forceCanvasResize, 1000);
+          return restoreDoomSaves(fs);
+        }).then(function(restoredCount) {
+          if (restoredCount > 0) {
+            console.log("Restauradas " + restoredCount + " partidas guardadas desde almacenamiento local.");
+            showToast("Restauradas " + restoredCount + " partida(s) guardada(s)");
+          }
+
+          return main(["-c", "cd DOOM", "-c", "DOOM.EXE"]);
+        }).then(function (ci) {
+          window.ci = ci;
+          fitGame();
+          setInterval(forceCanvasResize, 1000);
+
+          /* Auto-guardado periódico en segundo plano cada 4 segundos */
+          setInterval(function() {
+            persistDoomSaves();
+          }, 4000);
+
+          /* Guardado automático cuando la app se minimiza o cierra */
+          document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+              persistDoomSaves();
+            }
           });
+          window.addEventListener('pagehide', function() {
+            persistDoomSaves();
+          });
+          window.addEventListener('blur', function() {
+            persistDoomSaves();
+          });
+
         }).catch(function (err) {
-          console.error("Error extracted Doom executable:", err);
+          console.error("Error al iniciar DOOM:", err);
         });
       });
     };
